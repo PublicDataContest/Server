@@ -52,6 +52,16 @@ public class AuthServiceImpl implements AuthService {
         return existingMember != null;
     }
 
+    //비밀번호 틀렸을 때
+    @Override
+    public boolean isPasswordCorrect(String username, String password) {
+        Member user = memberRepository.findByUserName(username);
+        if (user == null) {
+            return false;
+        }
+        return passwordEncoder.matches(password, user.getPassword());
+    }
+
 
     @Override
     public LoginResponse localLogin(LoginRequest request) {
@@ -62,7 +72,7 @@ public class AuthServiceImpl implements AuthService {
         }
 
         // 비밀번호 일치 여부 확인
-        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+        if (!isPasswordCorrect(request.getUserName(), request.getPassword())) {
             throw new RuntimeException("비밀번호가 일치하지 않습니다.");
         }
 
