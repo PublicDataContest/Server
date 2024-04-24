@@ -10,17 +10,18 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api")
 public class RestaurantController {
     private final RestaurantService restaurantService;
 
-    @GetMapping("/api/execAmounts/{userId}")
+    /**
+     * @Description 매출 수 API
+     */
+    @GetMapping("/execAmounts/{userId}")
     public ResponseEntity<DataResponse<Page<RestaurantDto>>> getExecAmountsList(
             @PathVariable(name = "userId") Long userId,
             @RequestParam(defaultValue = "0") int page,
@@ -28,6 +29,22 @@ public class RestaurantController {
         Pageable pageable = PageRequest.of(page, size);
         Page<RestaurantDto> response
                 = restaurantService.getRestaurantExecAmountsDescDTO(userId, pageable);
+
+        return ResponseEntity.ok()
+                .body(new DataResponse<>(StatusCodeConstant.OK_STATUS_CODE, ResponseMessageConstant.SUCCESS, response));
+    }
+
+    /**
+     * @Description 방문 횟수 API
+     */
+    @GetMapping("/total-visit/{userId}")
+    public ResponseEntity<DataResponse<Page<RestaurantDto>>> getTotalVisitsList(
+            @PathVariable(name = "userId") Long userId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<RestaurantDto> response
+                = restaurantService.getRestaurantNumberOfVisitDescDTO(userId, pageable);
 
         return ResponseEntity.ok()
                 .body(new DataResponse<>(StatusCodeConstant.OK_STATUS_CODE, ResponseMessageConstant.SUCCESS, response));
