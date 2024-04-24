@@ -1,4 +1,4 @@
-package com.example.publicdatabackend.security.jwt;
+package com.example.publicdatabackend.config.security;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
