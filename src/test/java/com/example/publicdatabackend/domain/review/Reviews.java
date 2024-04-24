@@ -1,6 +1,6 @@
 package com.example.publicdatabackend.domain.review;
 
-import com.example.publicdatabackend.domain.Restaurant;
+import com.example.publicdatabackend.domain.restaurant.Restaurant;
 import com.example.publicdatabackend.domain.users.Users;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

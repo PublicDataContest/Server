@@ -10,7 +10,7 @@ import java.util.Optional;
 
 @Repository
 public interface WishListRestaurantRepository extends JpaRepository<WishListRestaurant, Long> {
-    @Query("select w from WishListRestaurant w where w.user.id =: userId and w.restaurant.id =: restaurantId")
+    @Query("select w from WishListRestaurant w where w.user.id = :userId and w.restaurant.id = :restaurantId")
     Optional<WishListRestaurant> findWishListRestaurantByUserIdAndRestaurantId(@Param("userId") Long userId,
                                                                                @Param("restaurantId") Long restaurantId);
 }

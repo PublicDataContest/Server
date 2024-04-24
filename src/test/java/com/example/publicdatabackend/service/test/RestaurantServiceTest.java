@@ -1,6 +1,6 @@
 package com.example.publicdatabackend.service.test;
 
-import com.example.publicdatabackend.domain.Restaurant;
+import com.example.publicdatabackend.domain.restaurant.Restaurant;
 import com.example.publicdatabackend.dto.RestaurantDto;
 import com.example.publicdatabackend.repository.KakaoReviewsRepository;
 import com.example.publicdatabackend.repository.RestaurantRepository;

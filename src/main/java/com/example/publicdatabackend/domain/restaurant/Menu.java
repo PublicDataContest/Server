@@ -1,6 +1,5 @@
-package com.example.publicdatabackend.domain.users;
+package com.example.publicdatabackend.domain.restaurant;
 
-import com.example.publicdatabackend.domain.restaurant.Restaurant;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,18 +7,18 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
+@Table
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Getter
-public class WishListRestaurant {
+public class Menu {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private Users user;
+    private String menu;
+    private String price;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant_id")

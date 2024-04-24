@@ -1,4 +1,4 @@
-package com.example.publicdatabackend.domain.review;
+package com.example.publicdatabackend.domain.reviews;
 
 import com.example.publicdatabackend.domain.restaurant.Restaurant;
 import jakarta.persistence.*;

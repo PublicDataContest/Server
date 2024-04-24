@@ -1,6 +1,6 @@
 package com.example.publicdatabackend.repository;
 
-import com.example.publicdatabackend.domain.Restaurant;
+import com.example.publicdatabackend.domain.restaurant.Restaurant;
 import com.example.publicdatabackend.domain.review.Reviews;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

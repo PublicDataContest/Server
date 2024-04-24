@@ -1,6 +1,6 @@
 package com.example.publicdatabackend.repository.test;
 
-import com.example.publicdatabackend.domain.Restaurant;
+import com.example.publicdatabackend.domain.restaurant.Restaurant;
 import com.example.publicdatabackend.repository.RestaurantRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

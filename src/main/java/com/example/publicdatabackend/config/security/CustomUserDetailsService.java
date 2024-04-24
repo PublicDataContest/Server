@@ -1,6 +1,6 @@
 package com.example.publicdatabackend.config.security;
 
-import com.example.publicdatabackend.domain.Users;
+import com.example.publicdatabackend.domain.users.Users;
 import com.example.publicdatabackend.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
