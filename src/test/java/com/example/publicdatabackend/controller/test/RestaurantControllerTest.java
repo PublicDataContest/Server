@@ -56,10 +56,10 @@ public class RestaurantControllerTest {
         // given
         final String url = "/api/execAmounts";
         final Long userId = 1L;
-        List<RestaurantDto.RestaurantExecAmounts> restaurantResponse = Arrays.asList(
-                RestaurantDto.RestaurantExecAmounts.builder().build(),
-                RestaurantDto.RestaurantExecAmounts.builder().build(),
-                RestaurantDto.RestaurantExecAmounts.builder().build()
+        List<RestaurantDto> restaurantResponse = Arrays.asList(
+                RestaurantDto.builder().build(),
+                RestaurantDto.builder().build(),
+                RestaurantDto.builder().build()
         );
         doReturn(restaurantResponse).when(restaurantService).getRestaurantExecAmountsDescDTO(userId);
 

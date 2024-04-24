@@ -20,7 +20,7 @@ public class RestaurantController {
 
     @GetMapping("/api/execAmounts")
     public ResponseEntity<DataResponse> getExecAmountsList(@RequestParam("userId") Long userId) {
-        List<RestaurantDto.RestaurantExecAmounts> response
+        List<RestaurantDto> response
                 = restaurantService.getRestaurantExecAmountsDescDTO(userId);
 
         return ResponseEntity.ok()
