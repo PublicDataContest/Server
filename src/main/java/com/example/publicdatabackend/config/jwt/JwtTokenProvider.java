@@ -1,5 +1,6 @@
-package com.example.publicdatabackend.security.jwt;
+package com.example.publicdatabackend.config.jwt;
 
+import com.example.publicdatabackend.config.security.UserPrincipal;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;

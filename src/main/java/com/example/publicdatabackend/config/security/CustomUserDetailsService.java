@@ -1,8 +1,7 @@
-package com.example.publicdatabackend.security.service;
+package com.example.publicdatabackend.config.security;
 
-import com.example.publicdatabackend.member.domain.Member;
-import com.example.publicdatabackend.member.repository.UserRepository;
-import com.example.publicdatabackend.security.jwt.UserPrincipal;
+import com.example.publicdatabackend.domain.Users;
+import com.example.publicdatabackend.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -18,7 +17,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     //사용자의 이름(userName)을 받아와, DB에서 찾고, UserDetails 객체로 변환 후 반환
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Member user = userRepository.findByUserName(username);
+        Users user = userRepository.findByUserName(username);
         return new UserPrincipal(user.getId(), user.getUserName(), user.getPassword());
     }
 }

@@ -1,6 +1,6 @@
-package com.example.publicdatabackend.member.domain;
+package com.example.publicdatabackend.domain;
 
-import com.example.publicdatabackend.common.entity.BaseEntity;
+import com.example.publicdatabackend.domain.common.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -10,7 +10,7 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 @ToString
-public class Member extends BaseEntity {
+public class Users extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="user_id")
@@ -23,7 +23,7 @@ public class Member extends BaseEntity {
     private String password;
 
     @Builder
-    private Member(Long id, String userName, String password){
+    private Users(Long id, String userName, String password){
         this.id=id;
         this.userName=userName;
         this.password=password;

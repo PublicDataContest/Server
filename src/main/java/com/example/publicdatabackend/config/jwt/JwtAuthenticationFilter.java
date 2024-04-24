@@ -1,7 +1,8 @@
-package com.example.publicdatabackend.security.jwt;
+package com.example.publicdatabackend.config.jwt;
 
-import com.example.publicdatabackend.security.service.CustomUserDetailsService;
-import com.example.publicdatabackend.security.service.RedisTokenStoreService;
+import com.example.publicdatabackend.config.security.UserPrincipal;
+import com.example.publicdatabackend.config.security.CustomUserDetailsService;
+import com.example.publicdatabackend.config.redis.RedisTokenStoreService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

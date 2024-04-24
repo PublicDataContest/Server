@@ -1,16 +1,16 @@
-package com.example.publicdatabackend.auth.controller;
+package com.example.publicdatabackend.controller;
 
-import com.example.publicdatabackend.auth.dto.LoginRequest;
-import com.example.publicdatabackend.auth.dto.LoginResponse;
-import com.example.publicdatabackend.auth.dto.RegisterRequest;
-import com.example.publicdatabackend.auth.dto.RegisterResponse;
-import com.example.publicdatabackend.auth.service.AuthService;
+import com.example.publicdatabackend.vo.LoginRequest;
+import com.example.publicdatabackend.vo.LoginResponse;
+import com.example.publicdatabackend.vo.RegisterRequest;
+import com.example.publicdatabackend.vo.RegisterResponse;
+import com.example.publicdatabackend.service.AuthService;
 import com.example.publicdatabackend.global.res.BaseResponse;
 import com.example.publicdatabackend.global.res.constant.ResponseMessageConstant;
 import com.example.publicdatabackend.global.res.constant.StatusCodeConstant;
-import com.example.publicdatabackend.security.jwt.JwtTokenProvider;
-import com.example.publicdatabackend.security.jwt.UserPrincipal;
-import com.example.publicdatabackend.security.service.RedisTokenStoreService;
+import com.example.publicdatabackend.config.jwt.JwtTokenProvider;
+import com.example.publicdatabackend.config.security.UserPrincipal;
+import com.example.publicdatabackend.config.redis.RedisTokenStoreService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

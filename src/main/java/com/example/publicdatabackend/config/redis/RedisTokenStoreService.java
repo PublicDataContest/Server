@@ -1,4 +1,4 @@
-package com.example.publicdatabackend.security.service;
+package com.example.publicdatabackend.config.redis;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
