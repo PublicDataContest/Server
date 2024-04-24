@@ -1,6 +1,6 @@
 package com.example.publicdatabackend.exception;
 
-import com.example.publicdatabackend.utils.UsersErrorResult;
+import com.example.publicdatabackend.utils.ErrorResult;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -42,7 +42,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler({UsersException.class})
-    public ResponseEntity<ErrorResponse> handleRestApiException(final UsersException exception) {
+    public ResponseEntity<ErrorResponse> handleUsersException(final UsersException exception) {
+        log.warn("UsersException occur: ", exception);
+        return this.makeErrorResponseEntity(exception.getErrorResult());
+    }
+
+    @ExceptionHandler({SeasonException.class})
+    public ResponseEntity<ErrorResponse> handleSeasonsException(final SeasonException exception) {
         log.warn("UsersException occur: ", exception);
         return this.makeErrorResponseEntity(exception.getErrorResult());
     }
@@ -50,10 +56,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler({Exception.class})
     public ResponseEntity<ErrorResponse> handleException(final Exception exception) {
         log.warn("Exception occur: ", exception);
-        return this.makeErrorResponseEntity(UsersErrorResult.UNKNOWN_EXCEPTION);
+        return this.makeErrorResponseEntity(ErrorResult.UNKNOWN_EXCEPTION);
     }
 
-    private ResponseEntity<ErrorResponse> makeErrorResponseEntity(final UsersErrorResult errorResult) {
+    private ResponseEntity<ErrorResponse> makeErrorResponseEntity(final ErrorResult errorResult) {
         return ResponseEntity.status(errorResult.getHttpStatus())
                 .body(new ErrorResponse(errorResult.getHttpStatus().toString(), errorResult.getMessage()));
     }

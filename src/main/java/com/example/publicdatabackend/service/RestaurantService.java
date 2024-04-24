@@ -2,17 +2,17 @@ package com.example.publicdatabackend.service;
 
 import com.example.publicdatabackend.domain.restaurant.Restaurant;
 import com.example.publicdatabackend.domain.statistics.CostsStatistics;
+import com.example.publicdatabackend.domain.statistics.SeasonsStatistics;
 import com.example.publicdatabackend.domain.users.Users;
 import com.example.publicdatabackend.dto.RestaurantDto;
+import com.example.publicdatabackend.exception.SeasonException;
 import com.example.publicdatabackend.exception.UsersException;
 import com.example.publicdatabackend.repository.*;
-import com.example.publicdatabackend.utils.UsersErrorResult;
+import com.example.publicdatabackend.utils.ErrorResult;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,6 +27,7 @@ public class RestaurantService {
     private final ReviewsRepository reviewsRepository;
     private final WishListRestaurantRepository wishListRestaurantRepository;
     private final CostsStatisticsRepository costsStatisticsRepository;
+    private final SeasonsRepository seasonsRepository;
 
     /**
      * @param userId
@@ -72,10 +73,34 @@ public class RestaurantService {
         return buildRestaurantDto(restaurantPage, userId);
     }
 
+    /**
+     * @param userId
+     * @param season
+     * @param pageable
+     * @return Page<RestaurantDto>
+     * @Description 계절별 Service Method
+     */
+    public Page<RestaurantDto> getRestaurantSeasonDTO(Long userId, String season, Pageable pageable) {
+        validateUser(userId);
+        validateSeason(season);
+
+        Page<SeasonsStatistics> seasonsStatistics = findSeasonsStatisticsBySeason(season, pageable);
+        Page<Restaurant> restaurantPage = getRestaurantFromSeasonsStatistics(seasonsStatistics, pageable);
+
+        return buildRestaurantDto(restaurantPage, userId);
+    }
+
+    // --> 예외 처리 구간
     private Users validateUser(Long userId) {
         return usersRepository.findById(userId)
-                .orElseThrow(() -> new UsersException(UsersErrorResult.USER_ID_NOT_FOUND));
+                .orElseThrow(() -> new UsersException(ErrorResult.USER_ID_NOT_FOUND));
     }
+
+    private void validateSeason(String season) {
+        if (!season.equals("spring") && !season.equals("summer") && !season.equals("fall") && !season.equals("winter"))
+            throw new SeasonException(ErrorResult.NOT_ALLOWED_SEASON_TYPE);
+    }
+    // <-- 예외 처리 구간
 
     private Page<RestaurantDto> buildRestaurantDto(Page<Restaurant> restaurantPage, Long userId) {
         return restaurantPage.map(restaurant -> {
@@ -98,6 +123,7 @@ public class RestaurantService {
         });
     }
 
+    // --> Statistics 반환 구간
     private Page<CostsStatistics> findCostsStatisticsByPrice(Long price, Pageable pageable) {
         if (price <= 10000) {
             return costsStatisticsRepository.findByLower10000(pageable);
@@ -110,6 +136,23 @@ public class RestaurantService {
         }
     }
 
+    private Page<SeasonsStatistics> findSeasonsStatisticsBySeason(String season, Pageable pageable) {
+        if (season.equals("spring")) {
+            return seasonsRepository.findBySpringDesc(pageable);
+        } else if (season.equals("summer")) {
+            return seasonsRepository.findBySummerDesc(pageable);
+        } else if (season.equals("fall")) {
+            return seasonsRepository.findByFallDesc(pageable);
+        } else if (season.equals("winter")) {
+            return seasonsRepository.findByWinterDesc(pageable);
+        } else {
+            throw new SeasonException(ErrorResult.UNKNOWN_EXCEPTION);
+        }
+    }
+    // <-- Statistics 반환 구간
+
+
+    // --> Statistics -> Restaurant 변환 구간
     private Page<Restaurant> getRestaurantFromCostsStatistics(Page<CostsStatistics> costsStatisticsPage, Pageable pageable) {
         List<Long> restaurantIds = costsStatisticsPage.getContent().stream()
                 .map(CostsStatistics::getRestaurantId)
@@ -118,4 +161,14 @@ public class RestaurantService {
         List<Restaurant> restaurants = restaurantRepository.findAllById(restaurantIds);
         return new PageImpl<>(restaurants, pageable, restaurants.size());
     }
+
+    private Page<Restaurant> getRestaurantFromSeasonsStatistics(Page<SeasonsStatistics> seasonsStatistics, Pageable pageable) {
+        List<Long> restaurantIds = seasonsStatistics.getContent().stream()
+                .map(SeasonsStatistics::getRestaurantId)
+                .collect(Collectors.toList());
+
+        List<Restaurant> restaurants = restaurantRepository.findAllById(restaurantIds);
+        return new PageImpl<>(restaurants, pageable, restaurants.size());
+    }
+    // <-- Statistics -> Restaurant 변환 구간
 }

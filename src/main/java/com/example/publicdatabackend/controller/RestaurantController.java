@@ -65,4 +65,21 @@ public class RestaurantController {
         return ResponseEntity.ok()
                 .body(new DataResponse<>(StatusCodeConstant.OK_STATUS_CODE, ResponseMessageConstant.SUCCESS, response));
     }
+
+    /**
+     * @Description 계절별 API
+     */
+    @GetMapping("/{userId}")
+    public ResponseEntity<DataResponse<Page<RestaurantDto>>> getSeasonList(
+            @PathVariable(name = "userId") Long userId,
+            @RequestParam(name = "season") String season,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<RestaurantDto> response
+                = restaurantService.getRestaurantSeasonDTO(userId, season, pageable);
+
+        return ResponseEntity.ok()
+                .body(new DataResponse<>(StatusCodeConstant.OK_STATUS_CODE, ResponseMessageConstant.SUCCESS, response));
+    }
 }
