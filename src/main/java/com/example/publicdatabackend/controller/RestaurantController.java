@@ -49,4 +49,20 @@ public class RestaurantController {
         return ResponseEntity.ok()
                 .body(new DataResponse<>(StatusCodeConstant.OK_STATUS_CODE, ResponseMessageConstant.SUCCESS, response));
     }
+
+    /**
+     * @Description 가격별 API
+     */
+    @GetMapping("/{price}/{userId}")
+    public ResponseEntity<DataResponse<Page<RestaurantDto>>> getPriceList(
+            @PathVariable(name = "userId") Long userId, @PathVariable(name = "price") Long price,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<RestaurantDto> response
+                = restaurantService.getRestaurantPriceDTO(userId, price, pageable);
+
+        return ResponseEntity.ok()
+                .body(new DataResponse<>(StatusCodeConstant.OK_STATUS_CODE, ResponseMessageConstant.SUCCESS, response));
+    }
 }
