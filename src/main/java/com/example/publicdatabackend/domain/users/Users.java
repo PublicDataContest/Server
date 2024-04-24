@@ -1,4 +1,4 @@
-package com.example.publicdatabackend.domain;
+package com.example.publicdatabackend.domain.users;
 
 import com.example.publicdatabackend.domain.common.entity.BaseEntity;
 import jakarta.persistence.*;
@@ -13,7 +13,6 @@ import lombok.*;
 public class Users extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="user_id")
     private Long id;
 
     @Column(name="login_id", nullable = false, unique = true)

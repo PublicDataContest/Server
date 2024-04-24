@@ -12,10 +12,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.stereotype.Service;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.List;
 
 //http 요청에서 jwt를 검증하고 인증을 처리
 @Slf4j
@@ -27,13 +29,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final CustomUserDetailsService customUserDetailsService;
     private final RedisTokenStoreService tokenStoreService;
 
+    private final List<RequestMatcher> permitAllRequestMatchers;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         final String requestURI = request.getRequestURI();
 
         //두 로직에서는 JWT검증할 필요가 없기때문에 제외하고 실행
-        if (requestURI.contains("/login") || requestURI.contains("/register")) {
+        if (requestURI.contains("/login") || requestURI.contains("/register") || requestURI.contains("/api")) {
             filterChain.doFilter(request, response);
             return;
         }

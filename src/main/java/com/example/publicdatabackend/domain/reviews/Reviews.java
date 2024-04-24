@@ -1,6 +1,7 @@
-package com.example.publicdatabackend.domain.review;
+package com.example.publicdatabackend.domain.reviews;
 
 import com.example.publicdatabackend.domain.restaurant.Restaurant;
+import com.example.publicdatabackend.domain.users.Users;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,7 +14,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @Getter
-public class KakaoReviews {
+public class Reviews {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -30,4 +31,7 @@ public class KakaoReviews {
     @JoinColumn(name = "restaurant_id")
     private Restaurant restaurant;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private Users user;
 }
