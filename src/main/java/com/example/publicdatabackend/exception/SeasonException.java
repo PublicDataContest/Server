@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public class UsersException extends RuntimeException {
+public class SeasonException extends RuntimeException {
 
     private final ErrorResult errorResult;
 

@@ -12,6 +12,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
@@ -61,6 +63,35 @@ public class RestaurantController {
         Pageable pageable = PageRequest.of(page, size);
         Page<RestaurantDto> response
                 = restaurantService.getRestaurantPriceDTO(userId, price, pageable);
+
+        return ResponseEntity.ok()
+                .body(new DataResponse<>(StatusCodeConstant.OK_STATUS_CODE, ResponseMessageConstant.SUCCESS, response));
+    }
+
+    /**
+     * @Description 계절별 API
+     */
+    @GetMapping("/{userId}")
+    public ResponseEntity<DataResponse<Page<RestaurantDto>>> getSeasonList(
+            @PathVariable(name = "userId") Long userId,
+            @RequestParam(name = "season") String season,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<RestaurantDto> response
+                = restaurantService.getRestaurantSeasonDTO(userId, season, pageable);
+
+        return ResponseEntity.ok()
+                .body(new DataResponse<>(StatusCodeConstant.OK_STATUS_CODE, ResponseMessageConstant.SUCCESS, response));
+    }
+
+    /**
+     * @Description TOP5 식당 API
+     */
+    @GetMapping("/{userId}/top-ranking")
+    public ResponseEntity<DataResponse<List<RestaurantDto>>> getTopRankingList(
+            @PathVariable(name = "userId") Long userId) {
+        List<RestaurantDto> response = restaurantService.getRestaurantTopRankingListDTO(userId);
 
         return ResponseEntity.ok()
                 .body(new DataResponse<>(StatusCodeConstant.OK_STATUS_CODE, ResponseMessageConstant.SUCCESS, response));
