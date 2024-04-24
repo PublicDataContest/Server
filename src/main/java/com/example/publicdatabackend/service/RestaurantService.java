@@ -12,6 +12,7 @@ import com.example.publicdatabackend.utils.ErrorResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -88,6 +89,19 @@ public class RestaurantService {
         Page<Restaurant> restaurantPage = getRestaurantFromSeasonsStatistics(seasonsStatistics, pageable);
 
         return buildRestaurantDto(restaurantPage, userId);
+    }
+
+    /**
+     * @param userId
+     * @return List<Restaurant>
+     * @Description Top5 식당 Service Method
+     */
+    public List<RestaurantDto> getRestaurantTopRankingListDTO(Long userId) {
+        validateUser(userId);
+
+        Page<Restaurant> restaurantPage = restaurantRepository.findAllByRatingDesc(PageRequest.of(0, 5));
+
+        return buildRestaurantDto(restaurantPage, userId).getContent();
     }
 
     // --> 예외 처리 구간
