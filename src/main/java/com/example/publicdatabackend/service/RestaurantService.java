@@ -21,7 +21,7 @@ public class RestaurantService {
     private final ReviewsRepository reviewsRepository;
     private final WishListRestaurantRepository wishListRestaurantRepository;
 
-    public Page<RestaurantDto.RestaurantExecAmounts> getRestaurantExecAmountsDescDTO(Long userId, Pageable pageable) {
+    public Page<RestaurantDto> getRestaurantExecAmountsDescDTO(Long userId, Pageable pageable) {
         // Page<Restaurant> 객체를 가져옴
         Page<Restaurant> page = restaurantRepository.findAllByExecAmountsDesc(pageable);
 
@@ -34,7 +34,7 @@ public class RestaurantService {
                     .findWishListRestaurantByUserIdAndRestaurantId(userId, restaurant.getId())
                     .isPresent();
 
-            return RestaurantDto.RestaurantExecAmounts.builder()
+            return RestaurantDto.builder()
                     .restaurantId(restaurant.getId())
                     .placeName(restaurant.getPlaceName())
                     .reviewsNum(kakaoReviewsNum + reviewsNum)

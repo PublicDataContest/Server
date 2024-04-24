@@ -21,12 +21,12 @@ public class RestaurantController {
     private final RestaurantService restaurantService;
 
     @GetMapping("/api/execAmounts/{userId}")
-    public ResponseEntity<DataResponse<Page<RestaurantDto.RestaurantExecAmounts>>> getExecAmountsList(
+    public ResponseEntity<DataResponse<Page<RestaurantDto>>> getExecAmountsList(
             @PathVariable(name = "userId") Long userId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<RestaurantDto.RestaurantExecAmounts> response
+        Page<RestaurantDto> response
                 = restaurantService.getRestaurantExecAmountsDescDTO(userId, pageable);
 
         return ResponseEntity.ok()
