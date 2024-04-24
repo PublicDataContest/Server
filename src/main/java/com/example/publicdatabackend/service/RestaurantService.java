@@ -6,9 +6,10 @@ import com.example.publicdatabackend.domain.statistics.SeasonsStatistics;
 import com.example.publicdatabackend.domain.users.Users;
 import com.example.publicdatabackend.dto.RestaurantDto;
 import com.example.publicdatabackend.exception.SeasonException;
-import com.example.publicdatabackend.exception.UsersException;
 import com.example.publicdatabackend.repository.*;
 import com.example.publicdatabackend.utils.ErrorResult;
+import com.example.publicdatabackend.utils.ExceptionUtils;
+import com.example.publicdatabackend.utils.RestaurantDtoConverterUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -22,13 +23,11 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class RestaurantService {
-    private final UsersRepository usersRepository;
     private final RestaurantRepository restaurantRepository;
-    private final KakaoReviewsRepository kakaoReviewsRepository;
-    private final ReviewsRepository reviewsRepository;
-    private final WishListRestaurantRepository wishListRestaurantRepository;
     private final CostsStatisticsRepository costsStatisticsRepository;
     private final SeasonsRepository seasonsRepository;
+    private final RestaurantDtoConverterUtils restaurantDtoConverterUtils;
+    private final ExceptionUtils exceptionUtils;
 
     /**
      * @param userId
@@ -104,39 +103,6 @@ public class RestaurantService {
         return buildRestaurantDto(restaurantPage, userId).getContent();
     }
 
-    // --> 예외 처리 구간
-    private Users validateUser(Long userId) {
-        return usersRepository.findById(userId)
-                .orElseThrow(() -> new UsersException(ErrorResult.USER_ID_NOT_FOUND));
-    }
-
-    private void validateSeason(String season) {
-        if (!season.equals("spring") && !season.equals("summer") && !season.equals("fall") && !season.equals("winter"))
-            throw new SeasonException(ErrorResult.NOT_ALLOWED_SEASON_TYPE);
-    }
-    // <-- 예외 처리 구간
-
-    private Page<RestaurantDto> buildRestaurantDto(Page<Restaurant> restaurantPage, Long userId) {
-        return restaurantPage.map(restaurant -> {
-            Long kakaoReviewsNum = kakaoReviewsRepository.findKakaoReviewsNumByRestaurant(restaurant);
-            Long reviewsNum = reviewsRepository.findReviewsNumByRestaurant(restaurant);
-
-            Boolean wishListRestaurant = wishListRestaurantRepository
-                    .findWishListRestaurantByUserIdAndRestaurantId(userId, restaurant.getId())
-                    .isPresent();
-
-            return RestaurantDto.builder()
-                    .restaurantId(restaurant.getId())
-                    .placeName(restaurant.getPlaceName())
-                    .reviewsNum(kakaoReviewsNum + reviewsNum)
-                    .rating(restaurant.getRating())
-                    .wishListRestaurant(wishListRestaurant)
-                    .currentOpeningHours(restaurant.getCurrentOpeningHours())
-                    .photoUrl(restaurant.getPhotoUrl())
-                    .build();
-        });
-    }
-
     // --> Statistics 반환 구간
     private Page<CostsStatistics> findCostsStatisticsByPrice(Long price, Pageable pageable) {
         if (price <= 10000) {
@@ -185,4 +151,18 @@ public class RestaurantService {
         return new PageImpl<>(restaurants, pageable, restaurants.size());
     }
     // <-- Statistics -> Restaurant 변환 구간
+
+    // --> UTIL Method 선언부
+    private Page<RestaurantDto> buildRestaurantDto(Page<Restaurant> restaurantPage, Long userId) {
+        return restaurantPage.map(restaurant -> restaurantDtoConverterUtils.buildRestaurantDto(restaurant, userId));
+    }
+
+    private Users validateUser(Long userId) {
+        return exceptionUtils.validateUser(userId);
+    }
+
+    private void validateSeason(String season) {
+        exceptionUtils.validateSeason(season);
+    }
+    // <-- UTIL Method 선언부
 }
