@@ -4,13 +4,14 @@ import com.example.publicdatabackend.domain.restaurant.Restaurant;
 import com.example.publicdatabackend.domain.statistics.CostsStatistics;
 import com.example.publicdatabackend.domain.statistics.SeasonsStatistics;
 import com.example.publicdatabackend.domain.users.Users;
-import com.example.publicdatabackend.dto.RestaurantDto;
+import com.example.publicdatabackend.dto.restaurant.RestaurantDto;
 import com.example.publicdatabackend.exception.SeasonException;
 import com.example.publicdatabackend.repository.*;
 import com.example.publicdatabackend.utils.ErrorResult;
 import com.example.publicdatabackend.utils.ExceptionUtils;
 import com.example.publicdatabackend.utils.RestaurantDtoConverterUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -28,6 +29,15 @@ public class RestaurantService {
     private final SeasonsRepository seasonsRepository;
     private final RestaurantDtoConverterUtils restaurantDtoConverterUtils;
     private final ExceptionUtils exceptionUtils;
+
+
+    public Page<RestaurantDto> searchRestaurantsByLongText(Long userId, String searchText, Pageable pageable) {
+        validateUser(userId);
+
+        Page<Restaurant> restaurantPage = restaurantRepository.findAllByLongText(searchText, pageable);
+
+        return buildRestaurantDto(restaurantPage, userId);
+    }
 
     /**
      * @param userId

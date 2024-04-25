@@ -19,4 +19,8 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
 
     @Query("SELECT r FROM Restaurant r ORDER BY r.rating DESC")
     Page<Restaurant> findAllByRatingDesc(Pageable pageable);
+
+    Page<Restaurant> findAllByLongText(String searchText, Pageable pageable);
+
+
 }

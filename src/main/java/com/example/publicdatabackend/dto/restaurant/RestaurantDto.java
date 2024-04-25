@@ -1,4 +1,4 @@
-package com.example.publicdatabackend.dto;
+package com.example.publicdatabackend.dto.restaurant;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,4 +17,5 @@ public class RestaurantDto {
     private Boolean wishListRestaurant;
     private String currentOpeningHours;
     private String photoUrl;
+    private String longText;
 }
