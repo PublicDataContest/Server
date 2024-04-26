@@ -2,16 +2,25 @@ package com.example.publicdatabackend.utils;
 
 import com.example.publicdatabackend.domain.restaurant.Menu;
 import com.example.publicdatabackend.domain.restaurant.Restaurant;
+import com.example.publicdatabackend.domain.statistics.CostsStatistics;
+import com.example.publicdatabackend.domain.statistics.PeopleStatistics;
+import com.example.publicdatabackend.domain.statistics.SeasonsStatistics;
+import com.example.publicdatabackend.domain.statistics.TimeStatistics;
 import com.example.publicdatabackend.dto.map.CardDetailDto;
 import com.example.publicdatabackend.dto.map.MapRestaurantDto;
 import com.example.publicdatabackend.dto.menu.MenuListDto;
 import com.example.publicdatabackend.dto.restaurant.RestaurantDto;
+import com.example.publicdatabackend.dto.statistics.PeopleStatisticsDto;
+import com.example.publicdatabackend.dto.statistics.PriceStatisticsDto;
+import com.example.publicdatabackend.dto.statistics.SeasonStatisticsDto;
+import com.example.publicdatabackend.dto.statistics.TimeStatisticsDto;
 import com.example.publicdatabackend.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -22,7 +31,6 @@ public class DtoConverterUtils {
     private final ReviewsRepository reviewsRepository;
     private final WishListRestaurantRepository wishListRestaurantRepository;
     private final CategoryRepository categoryRepository;
-    private final MenuRepository menuRepository;
 
     public RestaurantDto buildRestaurantDto(Restaurant restaurant, Long userId) {
         Long kakaoReviewsNum = kakaoReviewsRepository.findKakaoReviewsNumByRestaurant(restaurant);
@@ -98,6 +106,52 @@ public class DtoConverterUtils {
         return MenuListDto.builder()
                 .menu(menu.getMenu())
                 .price(menu.getPrice())
+                .build();
+    }
+
+    public PeopleStatisticsDto buildPeopleDto(Optional<PeopleStatistics> peopleStatistics){
+        return PeopleStatisticsDto.builder()
+                .lower5(peopleStatistics.get().getLower5())
+                .lower10(peopleStatistics.get().getLower10())
+                .lower20(peopleStatistics.get().getLower20())
+                .upper20(peopleStatistics.get().getUpper20())
+                .build();
+    }
+
+    public TimeStatisticsDto buildTimeDto(Optional<TimeStatistics> timeStatistics){
+        return TimeStatisticsDto.builder()
+                .hour8(timeStatistics.get().getHour8())
+                .hour9(timeStatistics.get().getHour9())
+                .hour10(timeStatistics.get().getHour10())
+                .hour11(timeStatistics.get().getHour11())
+                .hour12(timeStatistics.get().getHour12())
+                .hour13(timeStatistics.get().getHour13())
+                .hour14(timeStatistics.get().getHour14())
+                .hour15(timeStatistics.get().getHour15())
+                .hour16(timeStatistics.get().getHour16())
+                .hour17(timeStatistics.get().getHour17())
+                .hour18(timeStatistics.get().getHour18())
+                .hour19(timeStatistics.get().getHour19())
+                .hour20(timeStatistics.get().getHour20())
+                .hour21(timeStatistics.get().getHour21())
+                .build();
+
+    }
+    public SeasonStatisticsDto buildSeasonDto(Optional<SeasonsStatistics> seasonsStatistics){
+        return SeasonStatisticsDto.builder()
+                .spring(seasonsStatistics.get().getSpring())
+                .summer(seasonsStatistics.get().getSummer())
+                .fall(seasonsStatistics.get().getFall())
+                .winter(seasonsStatistics.get().getWinter())
+                .build();
+
+    }
+    public PriceStatisticsDto buildCostDto(Optional<CostsStatistics> costsStatistics){
+        return PriceStatisticsDto.builder()
+                .lower10000(costsStatistics.get().getLower10000())
+                .lower15000(costsStatistics.get().getLower15000())
+                .lower20000(costsStatistics.get().getLower20000())
+                .upper20000(costsStatistics.get().getUpper20000())
                 .build();
     }
 

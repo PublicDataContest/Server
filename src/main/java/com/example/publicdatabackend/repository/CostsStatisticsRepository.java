@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface CostsStatisticsRepository extends JpaRepository<CostsStatistics, Long> {
     @Query("SELECT c FROM CostsStatistics c WHERE c.lower10000 > 0 ORDER BY c.lower10000 DESC")
@@ -20,4 +22,6 @@ public interface CostsStatisticsRepository extends JpaRepository<CostsStatistics
 
     @Query("SELECT c FROM CostsStatistics c WHERE c.upper20000 > 0 ORDER BY c.upper20000 DESC")
     Page<CostsStatistics> findByUpper20000(Pageable pageable);
+
+    Optional<CostsStatistics> findById(Long restaurantId);
 }

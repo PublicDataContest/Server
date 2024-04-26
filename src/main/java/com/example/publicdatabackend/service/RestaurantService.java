@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 public class RestaurantService {
     private final RestaurantRepository restaurantRepository;
     private final CostsStatisticsRepository costsStatisticsRepository;
-    private final SeasonsRepository seasonsRepository;
+    private final SeasonStatisticsRepository seasonsRepository;
     private final DtoConverterUtils restaurantDtoConverterUtils;
     private final ExceptionUtils exceptionUtils;
 
