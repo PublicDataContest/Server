@@ -1,13 +1,12 @@
 package com.example.publicdatabackend.controller;
 
+import com.example.publicdatabackend.dto.map.CardDetailDto;
 import com.example.publicdatabackend.dto.map.MapRestaurantDto;
-import com.example.publicdatabackend.dto.restaurant.RestaurantDto;
 import com.example.publicdatabackend.global.res.DataResponse;
 import com.example.publicdatabackend.global.res.constant.ResponseMessageConstant;
 import com.example.publicdatabackend.global.res.constant.StatusCodeConstant;
 import com.example.publicdatabackend.service.RestaurantService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -17,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
-public class MapController {
+public class MainController {
     private final RestaurantService restaurantService;
 
 
@@ -36,5 +35,14 @@ public class MapController {
 
     }
 
-    //카드 리스트뷰를 누르면 뜨는 상세정보 api
+    //카드 리스트뷰를 누르면 뜨는 상세정보 API
+    @GetMapping("/card/{userId}/{restaurantId}")
+    public ResponseEntity<DataResponse<CardDetailDto>> getRestaurantDetails(
+            @PathVariable Long userId,
+            @PathVariable Long restaurantId
+    ) {
+        CardDetailDto cardDetailDto = restaurantService.getRestaurantDetails(userId, restaurantId);
+        return ResponseEntity.ok()
+                .body(new DataResponse<>(StatusCodeConstant.OK_STATUS_CODE, ResponseMessageConstant.SUCCESS, cardDetailDto));
+    }
 }
