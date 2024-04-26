@@ -8,7 +8,7 @@ import com.example.publicdatabackend.dto.restaurant.RestaurantDto;
 import com.example.publicdatabackend.repository.ReviewsRepository;
 import com.example.publicdatabackend.repository.WishListRestaurantRepository;
 import com.example.publicdatabackend.utils.ExceptionUtils;
-import com.example.publicdatabackend.utils.RestaurantDtoConverterUtils;
+import com.example.publicdatabackend.utils.DtoConverterUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 public class UsersService {
     private final WishListRestaurantRepository wishListRestaurantRepository;
     private final ExceptionUtils exceptionUtils;
-    private final RestaurantDtoConverterUtils restaurantDtoConverterUtils;
+    private final DtoConverterUtils restaurantDtoConverterUtils;
     private final ReviewsRepository reviewsRepository;
 
     /**

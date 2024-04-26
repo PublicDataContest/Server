@@ -4,15 +4,15 @@ import com.example.publicdatabackend.domain.restaurant.Restaurant;
 import com.example.publicdatabackend.domain.statistics.CostsStatistics;
 import com.example.publicdatabackend.domain.statistics.SeasonsStatistics;
 import com.example.publicdatabackend.domain.users.Users;
+import com.example.publicdatabackend.dto.map.CardDetailDto;
 import com.example.publicdatabackend.dto.map.MapRestaurantDto;
 import com.example.publicdatabackend.dto.restaurant.RestaurantDto;
 import com.example.publicdatabackend.exception.SeasonException;
 import com.example.publicdatabackend.repository.*;
 import com.example.publicdatabackend.utils.ErrorResult;
 import com.example.publicdatabackend.utils.ExceptionUtils;
-import com.example.publicdatabackend.utils.RestaurantDtoConverterUtils;
+import com.example.publicdatabackend.utils.DtoConverterUtils;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -20,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,22 +29,21 @@ public class RestaurantService {
     private final RestaurantRepository restaurantRepository;
     private final CostsStatisticsRepository costsStatisticsRepository;
     private final SeasonsRepository seasonsRepository;
-    private final RestaurantDtoConverterUtils restaurantDtoConverterUtils;
+    private final DtoConverterUtils restaurantDtoConverterUtils;
     private final ExceptionUtils exceptionUtils;
 
-
-    public Page<RestaurantDto> searchRestaurantsByLongText(Long userId, String searchText, Pageable pageable) {
-        validateUser(userId);
-
-        Page<Restaurant> restaurantPage = restaurantRepository.findAllByLongText(searchText, pageable);
-
-        return buildRestaurantDto(restaurantPage, userId);
-    }
-
+    //메인화면 뷰
     public Page<MapRestaurantDto> viewCoordinateByLongText(Long userId, String searchText, Pageable pageable){
         validateUser(userId);
         Page<Restaurant> restaurantPage = restaurantRepository.findAllByLongText(searchText,pageable);
         return buildMapRestaurantDto(restaurantPage,userId);
+    }
+
+    //각각 카드뷰
+    public CardDetailDto getRestaurantDetails(Long userId, Long restaurantId) {
+        validateUser(userId);
+        Optional<Restaurant> restaurant = restaurantRepository.findById(restaurantId);
+        return buildCardRestaurantDto(restaurant, userId);
     }
 
     /**
@@ -176,6 +176,14 @@ public class RestaurantService {
 
     private Page<MapRestaurantDto> buildMapRestaurantDto(Page<Restaurant> restaurantPage, Long userId){
         return restaurantPage.map(restaurant -> restaurantDtoConverterUtils.buildMapRestaurantDto(restaurant,userId));
+    }
+
+    private CardDetailDto buildCardRestaurantDto(Optional<Restaurant> restaurant, Long userId) {
+        if (restaurant.isPresent()) {
+            return restaurantDtoConverterUtils.buildCardViewDto(restaurant.get(), userId);
+        } else {
+            return null;
+        }
     }
 
 
