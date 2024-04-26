@@ -17,5 +17,4 @@ public class RestaurantDto {
     private Boolean wishListRestaurant;
     private String currentOpeningHours;
     private String photoUrl;
-    private String longText;
 }

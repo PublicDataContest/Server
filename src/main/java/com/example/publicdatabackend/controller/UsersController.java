@@ -1,6 +1,6 @@
 package com.example.publicdatabackend.controller;
 
-import com.example.publicdatabackend.dto.RestaurantDto;
+import com.example.publicdatabackend.dto.restaurant.RestaurantDto;
 import com.example.publicdatabackend.global.res.DataResponse;
 import com.example.publicdatabackend.global.res.constant.ResponseMessageConstant;
 import com.example.publicdatabackend.global.res.constant.StatusCodeConstant;

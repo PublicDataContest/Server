@@ -4,6 +4,7 @@ import com.example.publicdatabackend.domain.restaurant.Restaurant;
 import com.example.publicdatabackend.domain.statistics.CostsStatistics;
 import com.example.publicdatabackend.domain.statistics.SeasonsStatistics;
 import com.example.publicdatabackend.domain.users.Users;
+import com.example.publicdatabackend.dto.map.MapRestaurantDto;
 import com.example.publicdatabackend.dto.restaurant.RestaurantDto;
 import com.example.publicdatabackend.exception.SeasonException;
 import com.example.publicdatabackend.repository.*;
@@ -37,6 +38,12 @@ public class RestaurantService {
         Page<Restaurant> restaurantPage = restaurantRepository.findAllByLongText(searchText, pageable);
 
         return buildRestaurantDto(restaurantPage, userId);
+    }
+
+    public Page<MapRestaurantDto> viewCoordinateByLongText(Long userId, String searchText, Pageable pageable){
+        validateUser(userId);
+        Page<Restaurant> restaurantPage = restaurantRepository.findAllByLongText(searchText,pageable);
+        return buildMapRestaurantDto(restaurantPage,userId);
     }
 
     /**
@@ -166,6 +173,12 @@ public class RestaurantService {
     private Page<RestaurantDto> buildRestaurantDto(Page<Restaurant> restaurantPage, Long userId) {
         return restaurantPage.map(restaurant -> restaurantDtoConverterUtils.buildRestaurantDto(restaurant, userId));
     }
+
+    private Page<MapRestaurantDto> buildMapRestaurantDto(Page<Restaurant> restaurantPage, Long userId){
+        return restaurantPage.map(restaurant -> restaurantDtoConverterUtils.buildMapRestaurantDto(restaurant,userId));
+    }
+
+
 
     private Users validateUser(Long userId) {
         return exceptionUtils.validateUser(userId);

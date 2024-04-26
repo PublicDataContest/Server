@@ -1,4 +1,4 @@
-package com.example.publicdatabackend.vo;
+package com.example.publicdatabackend.dto.login;
 
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;

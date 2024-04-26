@@ -1,4 +1,4 @@
-package com.example.publicdatabackend.vo;
+package com.example.publicdatabackend.dto.register;
 
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
