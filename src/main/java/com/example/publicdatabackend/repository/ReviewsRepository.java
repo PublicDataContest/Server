@@ -11,6 +11,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ReviewsRepository extends JpaRepository<Reviews, Long> {
@@ -18,4 +19,8 @@ public interface ReviewsRepository extends JpaRepository<Reviews, Long> {
     Long findReviewsNumByRestaurant(@Param("restaurant")Restaurant restaurant);
 
     Page<Reviews> findAllByUser(Users user, Pageable pageable);
+
+    List<Reviews> findByUserId(Long userId);
+
+    List<Reviews> findByUserIdAndRestaurantId(Long userId, Long restaurantId);
 }

@@ -2,10 +2,16 @@ package com.example.publicdatabackend.utils;
 
 import com.example.publicdatabackend.domain.restaurant.Menu;
 import com.example.publicdatabackend.domain.restaurant.Restaurant;
+import com.example.publicdatabackend.domain.reviews.KakaoReviews;
+import com.example.publicdatabackend.domain.reviews.Reviews;
 import com.example.publicdatabackend.domain.statistics.CostsStatistics;
 import com.example.publicdatabackend.domain.statistics.PeopleStatistics;
 import com.example.publicdatabackend.domain.statistics.SeasonsStatistics;
 import com.example.publicdatabackend.domain.statistics.TimeStatistics;
+import com.example.publicdatabackend.domain.users.Users;
+import com.example.publicdatabackend.dto.review.KakaoReviewDto;
+import com.example.publicdatabackend.dto.review.NormalReviewDto;
+import com.example.publicdatabackend.dto.review.ReviewDto;
 import com.example.publicdatabackend.dto.map.CardDetailDto;
 import com.example.publicdatabackend.dto.map.MapRestaurantDto;
 import com.example.publicdatabackend.dto.menu.MenuListDto;
@@ -31,6 +37,7 @@ public class DtoConverterUtils {
     private final ReviewsRepository reviewsRepository;
     private final WishListRestaurantRepository wishListRestaurantRepository;
     private final CategoryRepository categoryRepository;
+    private final ExceptionUtils exceptionUtils;
 
     public RestaurantDto buildRestaurantDto(Restaurant restaurant, Long userId) {
         Long kakaoReviewsNum = kakaoReviewsRepository.findKakaoReviewsNumByRestaurant(restaurant);
@@ -153,6 +160,43 @@ public class DtoConverterUtils {
                 .lower20000(costsStatistics.get().getLower20000())
                 .upper20000(costsStatistics.get().getUpper20000())
                 .build();
+    }
+
+
+    public KakaoReviewDto buildKakaoReviewDto(KakaoReviews kakaoReview) {
+        return KakaoReviewDto.builder()
+                .id(kakaoReview.getId())
+                .authorName(kakaoReview.getAuthorName())
+                .rating(kakaoReview.getRating())
+                .relativeTimeDescription(kakaoReview.getRelativeTimeDescription())
+                .photoUrl(kakaoReview.getPhotoUrl())
+                .text(kakaoReview.getText())
+                .build();
+    }
+
+    public NormalReviewDto buildNormalReviewDto(Reviews review, Long userId) {
+        Users user = exceptionUtils.validateUser(userId);
+        return NormalReviewDto.builder()
+                .id(review.getId())
+                .authorName(user.getUserName()) // 사용자 이름으로 설정
+                .rating(review.getRating())
+                .relativeTimeDescription(review.getRelativeTimeDescription())
+                .photoUrl(review.getPhotoUrl())
+                .text(review.getText())
+                .build();
+    }
+
+    public Reviews convertToEntity(NormalReviewDto reviewDto, Users user, Optional<Restaurant> restaurant)
+    {
+        Reviews review = new Reviews();
+        review.setAuthorName(user.getUserName()); // authorName을 로그인한 사용자의 userName으로 설정
+        review.setRating(reviewDto.getRating());
+        review.setRelativeTimeDescription(reviewDto.getRelativeTimeDescription());
+        review.setPhotoUrl(reviewDto.getPhotoUrl());
+        review.setText(reviewDto.getText());
+        review.setUser(user);
+        restaurant.ifPresent(review::setRestaurant);
+        return review;
     }
 
 

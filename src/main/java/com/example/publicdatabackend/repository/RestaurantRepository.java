@@ -23,6 +23,5 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
 
     Page<Restaurant> findAllByLongText(String searchText, Pageable pageable);
 
-    @Override
-    Optional<Restaurant> findById(Long Id);
+    Optional<Restaurant> findById(Long restaurantId);
 }
