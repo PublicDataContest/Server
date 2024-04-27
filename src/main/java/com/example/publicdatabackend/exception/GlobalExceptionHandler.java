@@ -66,7 +66,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @Getter
     @RequiredArgsConstructor
-    static class ErrorResponse {
+    public static class ErrorResponse {
         private final String code;
         private final String message;
     }
