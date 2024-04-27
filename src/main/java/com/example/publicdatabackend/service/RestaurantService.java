@@ -64,6 +64,20 @@ public class RestaurantService {
      * @param userId
      * @param pageable
      * @return Page<RestaurantDto>
+     * @Description 평점순 Service Method
+     */
+    public Page<RestaurantDto> getRatingsListDTO(Long userId, Pageable pageable) {
+        validateUser(userId);
+
+        Page<Restaurant> restaurantPage = restaurantRepository.findAllByRatingDesc(pageable);
+
+        return buildRestaurantDto(restaurantPage, userId);
+    }
+
+    /**
+     * @param userId
+     * @param pageable
+     * @return Page<RestaurantDto>
      * @Description 방문횟수 Service Method
      */
     public Page<RestaurantDto> getRestaurantNumberOfVisitDescDTO(Long userId, Pageable pageable) {
