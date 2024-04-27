@@ -37,6 +37,22 @@ public class RestaurantController {
     }
 
     /**
+     * @Description 평점 순 API
+     */
+    @GetMapping("/ratings/{userId}")
+    public ResponseEntity<DataResponse<Page<RestaurantDto>>> getRatingsList(
+            @PathVariable(name = "userId") Long userId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+
+        Page<RestaurantDto> response = restaurantService.getRatingsListDTO(userId, pageable);
+
+        return ResponseEntity.ok()
+                .body(new DataResponse<>(StatusCodeConstant.OK_STATUS_CODE, ResponseMessageConstant.SUCCESS, response));
+    }
+
+    /**
      * @Description 방문 횟수 API
      */
     @GetMapping("/total-visit/{userId}")
