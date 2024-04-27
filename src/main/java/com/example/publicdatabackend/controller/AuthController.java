@@ -1,9 +1,9 @@
 package com.example.publicdatabackend.controller;
 
-import com.example.publicdatabackend.vo.LoginRequest;
-import com.example.publicdatabackend.vo.LoginResponse;
-import com.example.publicdatabackend.vo.RegisterRequest;
-import com.example.publicdatabackend.vo.RegisterResponse;
+import com.example.publicdatabackend.dto.login.LoginRequest;
+import com.example.publicdatabackend.dto.login.LoginResponse;
+import com.example.publicdatabackend.dto.register.RegisterRequest;
+import com.example.publicdatabackend.dto.register.RegisterResponse;
 import com.example.publicdatabackend.service.AuthService;
 import com.example.publicdatabackend.global.res.BaseResponse;
 import com.example.publicdatabackend.global.res.constant.ResponseMessageConstant;

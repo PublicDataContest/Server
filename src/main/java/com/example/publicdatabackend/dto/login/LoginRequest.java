@@ -1,16 +1,18 @@
-package com.example.publicdatabackend.vo;
+package com.example.publicdatabackend.dto.login;
 
 import jakarta.validation.constraints.NotEmpty;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
-public class RegisterRequest {
+public class LoginRequest {
+
     @NotEmpty(message="아이디는 빈칸일 수 없습니다")
     private String userName;
 
-    @NotEmpty(message="비밀번호는 빈칸일 수 없습니다")
+    @NotEmpty(message = "비밀번호는 빈칸일 수 없습니다")
     private String password;
 }

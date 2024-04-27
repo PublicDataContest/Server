@@ -1,9 +1,9 @@
 package com.example.publicdatabackend.service;
 
-import com.example.publicdatabackend.vo.LoginRequest;
-import com.example.publicdatabackend.vo.LoginResponse;
-import com.example.publicdatabackend.vo.RegisterRequest;
-import com.example.publicdatabackend.vo.RegisterResponse;
+import com.example.publicdatabackend.dto.login.LoginRequest;
+import com.example.publicdatabackend.dto.login.LoginResponse;
+import com.example.publicdatabackend.dto.register.RegisterRequest;
+import com.example.publicdatabackend.dto.register.RegisterResponse;
 import com.example.publicdatabackend.domain.users.Users;
 import com.example.publicdatabackend.repository.UserRepository;
 import com.example.publicdatabackend.config.jwt.JwtTokenProvider;

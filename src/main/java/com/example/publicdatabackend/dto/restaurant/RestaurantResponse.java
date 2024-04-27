@@ -1,4 +1,4 @@
-package com.example.publicdatabackend.vo;
+package com.example.publicdatabackend.dto.restaurant;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

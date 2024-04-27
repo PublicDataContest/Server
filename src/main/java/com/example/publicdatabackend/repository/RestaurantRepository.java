@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
@@ -19,4 +20,8 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
 
     @Query("SELECT r FROM Restaurant r ORDER BY r.rating DESC")
     Page<Restaurant> findAllByRatingDesc(Pageable pageable);
+
+    Page<Restaurant> findAllByLongText(String searchText, Pageable pageable);
+
+    Optional<Restaurant> findById(Long restaurantId);
 }

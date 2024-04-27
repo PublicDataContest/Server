@@ -1,9 +1,9 @@
 package com.example.publicdatabackend.controller.test;
 
 import com.example.publicdatabackend.controller.RestaurantController;
-import com.example.publicdatabackend.dto.RestaurantDto;
+import com.example.publicdatabackend.dto.restaurant.RestaurantDto;
 import com.example.publicdatabackend.service.RestaurantService;
-import com.example.publicdatabackend.vo.RestaurantResponse;
+import com.example.publicdatabackend.dto.restaurant.RestaurantResponse;
 import com.google.gson.Gson;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
