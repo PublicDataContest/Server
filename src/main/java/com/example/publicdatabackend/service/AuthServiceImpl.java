@@ -5,6 +5,7 @@ import com.example.publicdatabackend.dto.login.LoginResponse;
 import com.example.publicdatabackend.dto.register.RegisterRequest;
 import com.example.publicdatabackend.dto.register.RegisterResponse;
 import com.example.publicdatabackend.domain.users.Users;
+import com.example.publicdatabackend.dto.token.RefreshTokenResponse;
 import com.example.publicdatabackend.repository.UserRepository;
 import com.example.publicdatabackend.config.jwt.JwtTokenProvider;
 import com.example.publicdatabackend.config.redis.RedisTokenStoreService;
@@ -62,7 +63,6 @@ public class AuthServiceImpl implements AuthService {
         return passwordEncoder.matches(password, user.getPassword());
     }
 
-
     @Override
     public LoginResponse localLogin(LoginRequest request) {
         // 사용자 이름으로 회원 조회
@@ -94,4 +94,6 @@ public class AuthServiceImpl implements AuthService {
         // AccessToken 반환
         return new LoginResponse(user.getId(), accessToken, refreshToken);
     }
+
+
 }
