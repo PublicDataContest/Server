@@ -77,6 +77,7 @@ public class DtoConverterUtils {
                 .restaurantId(restaurant.getId())
                 .placeName(restaurant.getPlaceName())
                 .reviewsNum(kakaoReviewsNum + reviewsNum)
+                .photoUrl(restaurant.getPhotoUrl())
                 .rating(restaurant.getRating())
                 .x(restaurant.getX())
                 .y(restaurant.getY())
