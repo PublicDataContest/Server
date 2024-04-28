@@ -17,6 +17,7 @@ public class MapRestaurantDto {
     private Long reviewsNum;
     private Double rating;
     private Boolean wishListRestaurant;
+    private String photoUrl;
 
     private String x;
     private String y;
