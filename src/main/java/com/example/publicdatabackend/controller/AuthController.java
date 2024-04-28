@@ -1,9 +1,12 @@
 package com.example.publicdatabackend.controller;
 
+import com.example.publicdatabackend.config.security.CustomUserDetailsService;
 import com.example.publicdatabackend.dto.login.LoginRequest;
 import com.example.publicdatabackend.dto.login.LoginResponse;
 import com.example.publicdatabackend.dto.register.RegisterRequest;
 import com.example.publicdatabackend.dto.register.RegisterResponse;
+import com.example.publicdatabackend.dto.token.RefreshTokenRequest;
+import com.example.publicdatabackend.dto.token.RefreshTokenResponse;
 import com.example.publicdatabackend.service.AuthService;
 import com.example.publicdatabackend.global.res.BaseResponse;
 import com.example.publicdatabackend.global.res.constant.ResponseMessageConstant;
@@ -18,6 +21,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,6 +34,7 @@ public class AuthController {
     private final AuthService authService;
     private final RedisTokenStoreService tokenStoreService;
     private final JwtTokenProvider jwtTokenProvider;
+    private final CustomUserDetailsService customUserDetailsService;
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
@@ -77,5 +82,31 @@ public class AuthController {
         // 회원가입 성공 응답
         BaseResponse baseResponse = new BaseResponse(StatusCodeConstant.OK_STATUS_CODE, ResponseMessageConstant.REGISTER_SUCCESS);
         return ResponseEntity.status(HttpStatus.CREATED).body(baseResponse);
+    }
+
+    @PostMapping("/api/refresh-token")
+    public ResponseEntity<?> refreshToken(@RequestBody RefreshTokenRequest refreshTokenRequest) {
+        String refreshToken = refreshTokenRequest.getRefreshToken();
+        if (refreshToken != null && jwtTokenProvider.validateToken(refreshToken)) {
+            Long userId = jwtTokenProvider.getUserIdFromJWT(refreshToken);
+            String username = tokenStoreService.retrieveUserName(refreshToken);
+            if (username == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid Refresh Token");
+            }
+
+            UserPrincipal userDetails = (UserPrincipal) customUserDetailsService.loadUserByUsername(username);
+            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+            String newAccessToken = jwtTokenProvider.generateAccessToken(authentication);
+            String newRefreshToken = jwtTokenProvider.generateRefreshToken(authentication);
+
+            tokenStoreService.removeToken(refreshToken);
+            tokenStoreService.storeToken(newRefreshToken, username, true);
+
+            return ResponseEntity.ok(new RefreshTokenResponse(newAccessToken, newRefreshToken));
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid or Expired Refresh Token");
+        }
     }
 }
