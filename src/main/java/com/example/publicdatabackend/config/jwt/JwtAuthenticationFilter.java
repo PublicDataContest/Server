@@ -43,7 +43,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         //두 로직에서는 JWT검증할 필요가 없기때문에 제외하고 실행
-        if (requestURI.contains("/login") || requestURI.contains("/register") || requestURI.contains("/api")) {
+        if (requestURI.contains("/login") || requestURI.contains("/register")) {
             filterChain.doFilter(request, response);
             return;
         }
