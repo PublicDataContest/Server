@@ -30,7 +30,7 @@ public class SecurityConfig {
                 .formLogin(AbstractHttpConfigurer::disable) // 폼 로그인 비활성
                 .httpBasic(AbstractHttpConfigurer::disable) // 기본 인증 비활성
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/register/**", "/login/**", "/swagger-ui/**").permitAll()
+                        .requestMatchers("/**").permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)); // 세션 비활성 (HTTP 요청마다 인증 필요)
