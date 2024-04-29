@@ -47,6 +47,9 @@ public class DtoConverterUtils {
                 .findWishListRestaurantByUserIdAndRestaurantId(userId, restaurant.getId())
                 .isPresent();
 
+        List<Object[]> categoryDetails = categoryRepository.findCategoryDetailsByRestaurant(restaurant);
+        String hashTags = categoryDetails.isEmpty() ? "" : (String) categoryDetails.get(0)[1];
+
         return RestaurantDto.builder()
                 .restaurantId(restaurant.getId())
                 .placeName(restaurant.getPlaceName())
@@ -55,6 +58,7 @@ public class DtoConverterUtils {
                 .wishListRestaurant(wishListRestaurant)
                 .currentOpeningHours(restaurant.getCurrentOpeningHours())
                 .photoUrl(restaurant.getPhotoUrl())
+                .hashTags(hashTags)
                 .build();
     }
 
