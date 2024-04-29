@@ -7,6 +7,7 @@ import com.example.publicdatabackend.domain.users.Users;
 import com.example.publicdatabackend.dto.map.CardDetailDto;
 import com.example.publicdatabackend.dto.map.MapRestaurantDto;
 import com.example.publicdatabackend.dto.restaurant.RestaurantDto;
+import com.example.publicdatabackend.dto.restaurant.Top5RankingDto;
 import com.example.publicdatabackend.exception.SeasonException;
 import com.example.publicdatabackend.repository.*;
 import com.example.publicdatabackend.utils.ErrorResult;
@@ -126,12 +127,12 @@ public class RestaurantService {
      * @return List<Restaurant>
      * @Description Top5 식당 Service Method
      */
-    public List<RestaurantDto> getRestaurantTopRankingListDTO(Long userId) {
+    public List<Top5RankingDto> getRestaurantTopRankingListDTO(Long userId) {
         validateUser(userId);
 
         Page<Restaurant> restaurantPage = restaurantRepository.findAllByRatingDesc(PageRequest.of(0, 5));
 
-        return buildRestaurantDto(restaurantPage, userId).getContent();
+        return buildTop5RankingDto(restaurantPage, userId).getContent();
     }
 
     // --> Statistics 반환 구간
@@ -190,6 +191,10 @@ public class RestaurantService {
 
     private Page<MapRestaurantDto> buildMapRestaurantDto(Page<Restaurant> restaurantPage, Long userId){
         return restaurantPage.map(restaurant -> restaurantDtoConverterUtils.buildMapRestaurantDto(restaurant,userId));
+    }
+
+    private Page<Top5RankingDto> buildTop5RankingDto(Page<Restaurant> restaurantPage, Long userId){
+        return restaurantPage.map(restaurant -> restaurantDtoConverterUtils.buildTop5RankingDto(restaurant, userId));
     }
 
     private CardDetailDto buildCardRestaurantDto(Optional<Restaurant> restaurant, Long userId) {

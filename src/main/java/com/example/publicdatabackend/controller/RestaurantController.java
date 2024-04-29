@@ -1,6 +1,7 @@
 package com.example.publicdatabackend.controller;
 
 import com.example.publicdatabackend.dto.restaurant.RestaurantDto;
+import com.example.publicdatabackend.dto.restaurant.Top5RankingDto;
 import com.example.publicdatabackend.exception.GlobalExceptionHandler;
 import com.example.publicdatabackend.global.res.DataResponse;
 import com.example.publicdatabackend.global.res.constant.ResponseMessageConstant;
@@ -168,7 +169,7 @@ public class RestaurantController {
      * @Description TOP5 식당 API
      */
     @GetMapping("/{userId}/top-ranking")
-    @Operation(summary = "매출 수 List API", description = "매출 수 List API 입니다.")
+    @Operation(summary = "TOP5 식당 API", description = "TOP5 식당 API 입니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "요청에 성공하였습니다.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = DataResponse.class))),
             @ApiResponse(responseCode = "400", description = "UserId Not Found Exception", content = @Content(schema = @Schema(implementation = GlobalExceptionHandler.ErrorResponse.class)))
@@ -178,9 +179,9 @@ public class RestaurantController {
             @Parameter(name = "page", description = "페이지 처리 페이지 수", example = "0"),
             @Parameter(name = "size", description = "페이지 당 응답 받을 데이터 개수", example = "10"),
     })
-    public ResponseEntity<DataResponse<List<RestaurantDto>>> getTopRankingList(
+    public ResponseEntity<DataResponse<List<Top5RankingDto>>> getTopRankingList(
             @PathVariable(name = "userId") Long userId) {
-        List<RestaurantDto> response = restaurantService.getRestaurantTopRankingListDTO(userId);
+        List<Top5RankingDto> response = restaurantService.getRestaurantTopRankingListDTO(userId);
 
         return ResponseEntity.ok()
                 .body(new DataResponse<>(StatusCodeConstant.OK_STATUS_CODE, ResponseMessageConstant.SUCCESS, response));
