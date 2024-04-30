@@ -166,6 +166,58 @@ public class RestaurantController {
     }
 
     /**
+     * @Description 시간대별 API
+     */
+    @GetMapping("/time/{userId}")
+    @Operation(summary = "시간대별 List API", description = "시간대별 List API 입니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "요청에 성공하였습니다.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = DataResponse.class))),
+            @ApiResponse(responseCode = "400", description = "UserId Not Found Exception", content = @Content(schema = @Schema(implementation = GlobalExceptionHandler.ErrorResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Not Allowed Time Type", content = @Content(schema = @Schema(implementation = GlobalExceptionHandler.ErrorResponse.class)))
+    })
+    @Parameters({
+            @Parameter(name = "userId", description = "회원 PK 값", example = "1"),
+            @Parameter(name = "time", description = "시간대 입력 (morning, lunch, dinner만 가능)", example = "morning"),
+            @Parameter(name = "page", description = "페이지 처리 페이지 수", example = "0"),
+            @Parameter(name = "size", description = "페이지 당 응답 받을 데이터 개수", example = "10"),
+    })
+    public ResponseEntity<DataResponse<Page<RestaurantDto>>> getTimeList(
+            @PathVariable(name = "userId") Long userId,
+            @RequestParam(name = "time") String time,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<RestaurantDto> response = restaurantService.getRestaurantTimeDTO(userId, time, pageable);
+
+        return ResponseEntity.ok()
+                .body(new DataResponse<>(StatusCodeConstant.OK_STATUS_CODE, ResponseMessageConstant.SUCCESS, response));
+    }
+
+    @GetMapping("/people/{userId}/{people}")
+    @Operation(summary = "인원별 List API", description = "인원별 List API 입니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "요청에 성공하였습니다.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = DataResponse.class))),
+            @ApiResponse(responseCode = "400", description = "UserId Not Found Exception", content = @Content(schema = @Schema(implementation = GlobalExceptionHandler.ErrorResponse.class))),
+    })
+    @Parameters({
+            @Parameter(name = "userId", description = "회원 PK 값", example = "1"),
+            @Parameter(name = "people", description = "인원 수 입력", example = "5"),
+            @Parameter(name = "page", description = "페이지 처리 페이지 수", example = "0"),
+            @Parameter(name = "size", description = "페이지 당 응답 받을 데이터 개수", example = "10"),
+    })
+    public ResponseEntity<DataResponse<Page<RestaurantDto>>> getPeopleList(
+            @PathVariable(name = "userId") Long userId,
+            @PathVariable(name = "people") Long people,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<RestaurantDto> response = restaurantService.getRestaurantPeopleDTO(userId, people, pageable);
+
+        return ResponseEntity.ok()
+                .body(new DataResponse<>(StatusCodeConstant.OK_STATUS_CODE, ResponseMessageConstant.SUCCESS, response));
+    }
+
+    /**
      * @Description TOP5 식당 API
      */
     @GetMapping("/{userId}/top-ranking")

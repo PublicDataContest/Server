@@ -29,15 +29,17 @@ import java.util.stream.Collectors;
 public class RestaurantService {
     private final RestaurantRepository restaurantRepository;
     private final CostsStatisticsRepository costsStatisticsRepository;
+    private final TimeStatisticsRepository timeStatisticsRepository;
     private final SeasonStatisticsRepository seasonsRepository;
     private final DtoConverterUtils restaurantDtoConverterUtils;
     private final ExceptionUtils exceptionUtils;
+    private final PeopleStatisticsRepository peopleStatisticsRepository;
 
     //메인화면 뷰
-    public Page<MapRestaurantDto> viewCoordinateByLongText(Long userId, String searchText, Pageable pageable){
+    public Page<MapRestaurantDto> viewCoordinateByLongText(Long userId, String searchText, Pageable pageable) {
         validateUser(userId);
-        Page<Restaurant> restaurantPage = restaurantRepository.findAllByLongText(searchText,pageable);
-        return buildMapRestaurantDto(restaurantPage,userId);
+        Page<Restaurant> restaurantPage = restaurantRepository.findAllByLongText(searchText, pageable);
+        return buildMapRestaurantDto(restaurantPage, userId);
     }
 
     //각각 카드뷰
@@ -124,6 +126,56 @@ public class RestaurantService {
 
     /**
      * @param userId
+     * @param time
+     * @param pageable
+     * @return Page<RestaurantDto>
+     * @Description 시간대별 Service Method
+     */
+    public Page<RestaurantDto> getRestaurantTimeDTO(Long userId, String time, Pageable pageable) {
+        validateUser(userId);
+        validateTime(time);
+        Page<Restaurant> restaurantPage = null;
+
+        if (time.equals("morning")) {
+            List<Long> restaurantIds = timeStatisticsRepository.getRestaurantIdByMorning();
+            restaurantPage = restaurantRepository.findAllByRestaurantIds(restaurantIds, pageable);
+        }
+        if (time.equals("lunch")) {
+            List<Long> restaurantIds = timeStatisticsRepository.getRestaurantIdByLunch();
+            restaurantPage = restaurantRepository.findAllByRestaurantIds(restaurantIds, pageable);
+        }
+        if (time.equals("dinner")) {
+            List<Long> restaurantIds = timeStatisticsRepository.getRestaurantIdByDinner();
+            restaurantPage = restaurantRepository.findAllByRestaurantIds(restaurantIds, pageable);
+        }
+
+        return buildRestaurantDto(restaurantPage, userId);
+    }
+
+    public Page<RestaurantDto> getRestaurantPeopleDTO(Long userId, Long people, Pageable pageable) {
+        validateUser(userId);
+
+        Page<Restaurant> restaurantPage = null;
+
+        if (people <= 5) {
+            List<Long> restaurantIds = peopleStatisticsRepository.findRestaurantIdsByLower5();
+            restaurantPage = restaurantRepository.findAllByRestaurantIds(restaurantIds, pageable);
+        } else if (people <= 10) {
+            List<Long> restaurantIds = peopleStatisticsRepository.findRestaurantIdsByLower10();
+            restaurantPage = restaurantRepository.findAllByRestaurantIds(restaurantIds, pageable);
+        } else if (people <= 20) {
+            List<Long> restaurantIds = peopleStatisticsRepository.findRestaurantIdsByLower20();
+            restaurantPage = restaurantRepository.findAllByRestaurantIds(restaurantIds, pageable);
+        } else {
+            List<Long> restaurantIds = peopleStatisticsRepository.findRestaurantIdsByUpper20();
+            restaurantPage = restaurantRepository.findAllByRestaurantIds(restaurantIds, pageable);
+        }
+
+        return buildRestaurantDto(restaurantPage, userId);
+    }
+
+    /**
+     * @param userId
      * @return List<Restaurant>
      * @Description Top5 식당 Service Method
      */
@@ -189,11 +241,11 @@ public class RestaurantService {
         return restaurantPage.map(restaurant -> restaurantDtoConverterUtils.buildRestaurantDto(restaurant, userId));
     }
 
-    private Page<MapRestaurantDto> buildMapRestaurantDto(Page<Restaurant> restaurantPage, Long userId){
-        return restaurantPage.map(restaurant -> restaurantDtoConverterUtils.buildMapRestaurantDto(restaurant,userId));
+    private Page<MapRestaurantDto> buildMapRestaurantDto(Page<Restaurant> restaurantPage, Long userId) {
+        return restaurantPage.map(restaurant -> restaurantDtoConverterUtils.buildMapRestaurantDto(restaurant, userId));
     }
 
-    private Page<Top5RankingDto> buildTop5RankingDto(Page<Restaurant> restaurantPage, Long userId){
+    private Page<Top5RankingDto> buildTop5RankingDto(Page<Restaurant> restaurantPage, Long userId) {
         return restaurantPage.map(restaurant -> restaurantDtoConverterUtils.buildTop5RankingDto(restaurant, userId));
     }
 
@@ -206,13 +258,16 @@ public class RestaurantService {
     }
 
 
-
     private Users validateUser(Long userId) {
         return exceptionUtils.validateUser(userId);
     }
 
     private void validateSeason(String season) {
         exceptionUtils.validateSeason(season);
+    }
+
+    private void validateTime(String time) {
+        exceptionUtils.validateTime(time);
     }
     // <-- UTIL Method 선언부
 }

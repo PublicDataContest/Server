@@ -13,6 +13,9 @@ public enum ErrorResult {
     // SEASON
     NOT_ALLOWED_SEASON_TYPE(HttpStatus.BAD_REQUEST, "Not Allowed Season Type"),
 
+    // Time
+    NOT_ALLOWED_TIME_TYPE(HttpStatus.BAD_REQUEST, "Not Allowed Time Type"),
+
     // SERVER
     UNKNOWN_EXCEPTION(HttpStatus.INTERNAL_SERVER_ERROR, "Unknown Exception"),
     ;
