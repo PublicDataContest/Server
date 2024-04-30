@@ -1,5 +1,6 @@
 package com.example.publicdatabackend.repository;
 
+import com.example.publicdatabackend.domain.restaurant.Restaurant;
 import com.example.publicdatabackend.domain.users.Users;
 import com.example.publicdatabackend.domain.users.WishListRestaurant;
 import org.springframework.data.domain.Page;
@@ -17,6 +18,7 @@ public interface WishListRestaurantRepository extends JpaRepository<WishListRest
     @Query("select w from WishListRestaurant w where w.user.id = :userId and w.restaurant.id = :restaurantId")
     Optional<WishListRestaurant> findWishListRestaurantByUserIdAndRestaurantId(@Param("userId") Long userId,
                                                                                @Param("restaurantId") Long restaurantId);
+    Optional<WishListRestaurant> findByUserAndRestaurant(Users user, Restaurant restaurant);
 
     Page<WishListRestaurant> findWishListRestaurantByUser(Users users, Pageable pageable);
 }

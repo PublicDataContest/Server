@@ -2,15 +2,14 @@ package com.example.publicdatabackend.controller;
 
 import com.example.publicdatabackend.dto.review.KakaoReviewDto;
 import com.example.publicdatabackend.dto.review.NormalReviewDto;
-import com.example.publicdatabackend.dto.review.ReviewDto;
 import com.example.publicdatabackend.global.res.DataResponse;
 import com.example.publicdatabackend.service.ReviewService;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,25 +53,21 @@ public class ReviewController {
 
     //리뷰 등록
     @PostMapping("/normal/{userId}/{restaurantId}")
-    public ResponseEntity<DataResponse<NormalReviewDto>> createNormalReview(
-            @PathVariable Long restaurantId,
+    public ResponseEntity<NormalReviewDto> createNormalReview(
             @PathVariable Long userId,
-            @RequestBody NormalReviewDto reviewDto) {
+            @PathVariable Long restaurantId,
+            @ModelAttribute NormalReviewDto reviewDto) throws IOException {
+        // Service에서 사용자 이름을 설정
         NormalReviewDto createdReview = reviewService.createNormalReview(reviewDto, userId, restaurantId);
-        DataResponse<NormalReviewDto> response = new DataResponse<>(createdReview);
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
+        return new ResponseEntity<>(createdReview, HttpStatus.CREATED);
     }
 
-
-    @DeleteMapping("/normal/{userId}/{restaurantId}/{reviewId}")
+    @DeleteMapping("/normal/{userId}/reviews/{reviewId}")
     public ResponseEntity<DataResponse<Void>> deleteNormalReview(
             @PathVariable Long userId,
-            @PathVariable Long restaurantId,
-            @PathVariable Long reviewId
-    ) {
-        reviewService.deleteNormalReview(userId, restaurantId, reviewId);
-        DataResponse<Void> response = new DataResponse<>(null);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+            @PathVariable Long reviewId) {
+        reviewService.deleteNormalReview(reviewId, userId);
+        DataResponse<Void> response = new DataResponse<>(HttpStatus.OK.value(), "삭제되었습니다.", null);
+        return ResponseEntity.ok(response);
     }
-
 }

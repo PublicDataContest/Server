@@ -10,6 +10,7 @@ import lombok.ToString;
 @ToString
 @Builder
 public class RefreshTokenResponse {
+    private Long userId;
     private String accessToken;
     private String refreshToken;
 

@@ -2,7 +2,6 @@ package com.example.publicdatabackend.config.jwt;
 
 import com.example.publicdatabackend.config.security.UserPrincipal;
 import io.jsonwebtoken.*;
-import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
@@ -40,7 +39,7 @@ public class JwtTokenProvider {
         Date expiryDate = new Date(now.getTime() + jwtAccessTokenExpirationInMs);
 
         return Jwts.builder()
-                .setSubject(Long.toString(userPrincipal.getId()))
+                .setSubject(userPrincipal.getUsername()) // 사용자 ID 대신 사용자 이름 사용
                 .setIssuedAt(now)
                 .setExpiration(expiryDate)
                 .signWith(key, SignatureAlgorithm.HS512)
@@ -53,7 +52,7 @@ public class JwtTokenProvider {
         Date expiryDate = new Date(now.getTime() + jwtRefreshTokenExpirationInMs);
 
         return Jwts.builder()
-                .setSubject(Long.toString(userPrincipal.getId()))
+                .setSubject(userPrincipal.getUsername()) // 사용자 ID 대신 사용자 이름 사용
                 .setIssuedAt(now)
                 .setExpiration(expiryDate)
                 .signWith(key, SignatureAlgorithm.HS512)
@@ -73,12 +72,12 @@ public class JwtTokenProvider {
         }
     }
 
-    public Long getUserIdFromJWT(String token) {
+    public String getUserIdFromJWT(String token) {
         Claims claims = Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
-        return Long.parseLong(claims.getSubject());
+        return claims.getSubject();
     }
 }
