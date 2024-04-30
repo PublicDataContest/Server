@@ -88,13 +88,17 @@ public class AuthController {
     public ResponseEntity<?> refreshToken(@RequestBody RefreshTokenRequest refreshTokenRequest) {
         String refreshToken = refreshTokenRequest.getRefreshToken();
         if (refreshToken != null && jwtTokenProvider.validateToken(refreshToken)) {
-            Long userId = jwtTokenProvider.getUserIdFromJWT(refreshToken);
+            String userName = jwtTokenProvider.getUserIdFromJWT(refreshToken);
             String username = tokenStoreService.retrieveUserName(refreshToken);
             if (username == null) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid Refresh Token");
             }
 
             UserPrincipal userDetails = (UserPrincipal) customUserDetailsService.loadUserByUsername(username);
+            if (userDetails == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not found");
+            }
+
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
