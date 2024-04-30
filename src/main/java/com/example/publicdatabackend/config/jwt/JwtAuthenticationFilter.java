@@ -31,7 +31,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
         String requestURI = request.getRequestURI();
 
-        if (!requestURI.equals("/login") && !requestURI.equals("/register") && !requestURI.startsWith("/api/public")) {
+        if (
+                !requestURI.equals("/login") &&
+                !requestURI.equals("/register") &&
+                        !requestURI.contains("/api")
+                //!requestURI.startsWith("/api/public") --> 개발을 위해 임시로 주석처리
+    )
+        {
             String header = request.getHeader("Authorization");
             if (header == null || !header.startsWith("Bearer ")) {
                 log.info("No Authorization header or wrong format");
