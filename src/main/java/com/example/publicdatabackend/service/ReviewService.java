@@ -75,8 +75,14 @@ public class ReviewService {
                 .collect(Collectors.toList());
     }
 
-    public void deleteNormalReview(Long userId, Long restaurantId, Long reviewId) {
-        Reviews review = (Reviews) reviewsRepository.findByUserIdAndRestaurantId(reviewId, restaurantId);
+    public void deleteNormalReview(Long reviewId, Long userId) {
+        Reviews review = reviewsRepository.findById(reviewId)
+                .orElseThrow(() -> new IllegalArgumentException("Review not found with id: " + reviewId));
+
+        if (!review.getUser().getId().equals(userId)) {
+            throw new IllegalStateException("You are not authorized to delete this review");
+        }
+
         reviewsRepository.delete(review);
     }
 

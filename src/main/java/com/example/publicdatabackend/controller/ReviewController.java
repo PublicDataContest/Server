@@ -62,15 +62,12 @@ public class ReviewController {
         return new ResponseEntity<>(createdReview, HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/normal/{userId}/{restaurantId}/{reviewId}")
+    @DeleteMapping("/normal/{userId}/reviews/{reviewId}")
     public ResponseEntity<DataResponse<Void>> deleteNormalReview(
             @PathVariable Long userId,
-            @PathVariable Long restaurantId,
-            @PathVariable Long reviewId
-    ) {
-        reviewService.deleteNormalReview(userId, restaurantId, reviewId);
-        DataResponse<Void> response = new DataResponse<>(null);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+            @PathVariable Long reviewId) {
+        reviewService.deleteNormalReview(reviewId, userId);
+        DataResponse<Void> response = new DataResponse<>(HttpStatus.OK.value(), "삭제되었습니다.", null);
+        return ResponseEntity.ok(response);
     }
-
 }
