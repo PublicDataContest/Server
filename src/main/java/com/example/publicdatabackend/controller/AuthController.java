@@ -88,7 +88,6 @@ public class AuthController {
     public ResponseEntity<?> refreshToken(@RequestBody RefreshTokenRequest refreshTokenRequest) {
         String refreshToken = refreshTokenRequest.getRefreshToken();
         if (refreshToken != null && jwtTokenProvider.validateToken(refreshToken)) {
-            String userName = jwtTokenProvider.getUserIdFromJWT(refreshToken);
             String username = tokenStoreService.retrieveUserName(refreshToken);
             if (username == null) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid Refresh Token");
@@ -108,9 +107,11 @@ public class AuthController {
             tokenStoreService.removeToken(refreshToken);
             tokenStoreService.storeToken(newRefreshToken, username, true);
 
-            return ResponseEntity.ok(new RefreshTokenResponse(newAccessToken, newRefreshToken));
+            // Include userId in the response
+            return ResponseEntity.ok(new RefreshTokenResponse(userDetails.getId(), newAccessToken, newRefreshToken));
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid or Expired Refresh Token");
         }
     }
+
 }
