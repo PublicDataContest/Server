@@ -2,6 +2,7 @@ package com.example.publicdatabackend.utils;
 
 import com.example.publicdatabackend.domain.users.Users;
 import com.example.publicdatabackend.exception.SeasonException;
+import com.example.publicdatabackend.exception.TimeException;
 import com.example.publicdatabackend.exception.UsersException;
 import com.example.publicdatabackend.repository.UsersRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,5 +21,10 @@ public class ExceptionUtils {
     public void validateSeason(String season) {
         if (!season.equals("spring") && !season.equals("summer") && !season.equals("fall") && !season.equals("winter"))
             throw new SeasonException(ErrorResult.NOT_ALLOWED_SEASON_TYPE);
+    }
+
+    public void validateTime(String time) {
+        if (!time.equals("morning") && !time.equals("lunch") && !time.equals("winter"))
+            throw new TimeException(ErrorResult.NOT_ALLOWED_TIME_TYPE);
     }
 }

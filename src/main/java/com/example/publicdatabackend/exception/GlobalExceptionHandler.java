@@ -53,6 +53,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return this.makeErrorResponseEntity(exception.getErrorResult());
     }
 
+    @ExceptionHandler({TimeException.class})
+    public ResponseEntity<ErrorResponse> handleTimeException(final TimeException exception) {
+        log.warn("TimeException occur: ", exception);
+        return this.makeErrorResponseEntity(exception.getErrorResult());
+    }
+
     @ExceptionHandler({Exception.class})
     public ResponseEntity<ErrorResponse> handleException(final Exception exception) {
         log.warn("Exception occur: ", exception);
