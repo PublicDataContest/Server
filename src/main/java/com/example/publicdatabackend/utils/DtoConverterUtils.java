@@ -9,6 +9,7 @@ import com.example.publicdatabackend.domain.statistics.PeopleStatistics;
 import com.example.publicdatabackend.domain.statistics.SeasonsStatistics;
 import com.example.publicdatabackend.domain.statistics.TimeStatistics;
 import com.example.publicdatabackend.domain.users.Users;
+import com.example.publicdatabackend.dto.restaurant.Top5RankingDto;
 import com.example.publicdatabackend.dto.review.KakaoReviewDto;
 import com.example.publicdatabackend.dto.review.NormalReviewDto;
 import com.example.publicdatabackend.dto.review.ReviewDto;
@@ -47,6 +48,9 @@ public class DtoConverterUtils {
                 .findWishListRestaurantByUserIdAndRestaurantId(userId, restaurant.getId())
                 .isPresent();
 
+        List<Object[]> categoryDetails = categoryRepository.findCategoryDetailsByRestaurant(restaurant);
+        String hashTags = categoryDetails.isEmpty() ? "" : (String) categoryDetails.get(0)[1];
+
         return RestaurantDto.builder()
                 .restaurantId(restaurant.getId())
                 .placeName(restaurant.getPlaceName())
@@ -55,6 +59,26 @@ public class DtoConverterUtils {
                 .wishListRestaurant(wishListRestaurant)
                 .currentOpeningHours(restaurant.getCurrentOpeningHours())
                 .photoUrl(restaurant.getPhotoUrl())
+                .hashTags(hashTags)
+                .build();
+    }
+
+    public Top5RankingDto buildTop5RankingDto(Restaurant restaurant, Long userId) {
+        Long kakaoReviewsNum = kakaoReviewsRepository.findKakaoReviewsNumByRestaurant(restaurant);
+        Long reviewsNum = reviewsRepository.findReviewsNumByRestaurant(restaurant);
+
+        Boolean wishListRestaurant = wishListRestaurantRepository
+                .findWishListRestaurantByUserIdAndRestaurantId(userId, restaurant.getId())
+                .isPresent();
+
+        List<Object[]> categoryDetails = categoryRepository.findCategoryDetailsByRestaurant(restaurant);
+        String hashTags = categoryDetails.isEmpty() ? "" : (String) categoryDetails.get(0)[1];
+
+        return Top5RankingDto.builder()
+                .restaurantId(restaurant.getId())
+                .placeName(restaurant.getPlaceName())
+                .reviewsNum(kakaoReviewsNum + reviewsNum)
+                .rating(restaurant.getRating())
                 .build();
     }
 

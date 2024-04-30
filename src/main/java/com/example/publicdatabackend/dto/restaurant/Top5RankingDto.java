@@ -11,13 +11,9 @@ import lombok.ToString;
 @Builder
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class RestaurantDto {
+public class Top5RankingDto {
     private Long restaurantId;
     private String placeName;
     private Long reviewsNum;
     private Double rating;
-    private Boolean wishListRestaurant;
-    private String currentOpeningHours;
-    private String photoUrl;
-    private String hashTags;
 }
