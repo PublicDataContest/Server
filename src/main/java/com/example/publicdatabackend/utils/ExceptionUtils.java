@@ -24,7 +24,7 @@ public class ExceptionUtils {
     }
 
     public void validateTime(String time) {
-        if (!time.equals("morning") && !time.equals("lunch") && !time.equals("winter"))
+        if (!time.equals("morning") && !time.equals("lunch") && !time.equals("dinner"))
             throw new TimeException(ErrorResult.NOT_ALLOWED_TIME_TYPE);
     }
 }
