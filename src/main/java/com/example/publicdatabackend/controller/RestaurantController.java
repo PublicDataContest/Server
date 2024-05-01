@@ -238,4 +238,31 @@ public class RestaurantController {
         return ResponseEntity.ok()
                 .body(new DataResponse<>(StatusCodeConstant.OK_STATUS_CODE, ResponseMessageConstant.SUCCESS, response));
     }
+
+    /**
+     * @Description 나를 위한 맞춤 맛집 API
+     */
+    @GetMapping("/recommendation/{userId}")
+    @Operation(summary = "나를 위한 맞춤 맛집 API", description = "나를 위한 맞춤 맛집 API 입니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "요청에 성공하였습니다.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = DataResponse.class))),
+            @ApiResponse(responseCode = "400", description = "UserId Not Found Exception", content = @Content(schema = @Schema(implementation = GlobalExceptionHandler.ErrorResponse.class)))
+    })
+    @Parameters({
+            @Parameter(name = "userId", description = "회원 PK 값", example = "1"),
+            @Parameter(name = "longText", description = "구 정보", example = "용산구"),
+            @Parameter(name = "page", description = "페이지 처리 페이지 수", example = "0"),
+            @Parameter(name = "size", description = "페이지 당 응답 받을 데이터 개수", example = "10"),
+    })
+    public ResponseEntity<DataResponse<Page<RestaurantDto>>> getCustomeRestaurantList(
+            @PathVariable(name = "userId") Long userId,
+            @RequestParam(name = "longText") String longText,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<RestaurantDto> response = restaurantService.getRecommendationRestaurantDTO(userId, longText, pageable);
+
+        return ResponseEntity.ok()
+                .body(new DataResponse<>(StatusCodeConstant.OK_STATUS_CODE, ResponseMessageConstant.SUCCESS, response));
+    }
 }
