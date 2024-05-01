@@ -28,4 +28,7 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
 
     @Query("SELECT r FROM Restaurant r WHERE r.id IN (:restaurantIds)")
     Page<Restaurant> findAllByRestaurantIds(@Param("restaurantIds") List<Long> restaurantIds, Pageable pageable);
+
+    @Query("SELECT r FROM Restaurant r WHERE r.longText = :longText ORDER BY r.rating DESC")
+    Page<Restaurant> findAllByLongTextOrderByRating(@Param("longText") String longText, Pageable pageable);
 }

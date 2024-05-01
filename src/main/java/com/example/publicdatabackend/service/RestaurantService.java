@@ -152,6 +152,13 @@ public class RestaurantService {
         return buildRestaurantDto(restaurantPage, userId);
     }
 
+    /**
+     * @param userId
+     * @param people
+     * @param pageable
+     * @return Page<RestaurantDto>
+     * @Description 인원수별 Service Method
+     */
     public Page<RestaurantDto> getRestaurantPeopleDTO(Long userId, Long people, Pageable pageable) {
         validateUser(userId);
 
@@ -185,6 +192,21 @@ public class RestaurantService {
         Page<Restaurant> restaurantPage = restaurantRepository.findAllByRatingDesc(PageRequest.of(0, 5));
 
         return buildTop5RankingDto(restaurantPage, userId).getContent();
+    }
+
+    /**
+     * @param userId
+     * @param longText
+     * @param pageable
+     * @return Page<RestaurantDto>
+     * @Description 나를 위한 맞춤 맛집 Service Method
+     */
+    public Page<RestaurantDto> getRecommendationRestaurantDTO(Long userId, String longText, Pageable pageable) {
+        validateUser(userId);
+
+        Page<Restaurant> restaurantPage = restaurantRepository.findAllByLongTextOrderByRating(longText, pageable);
+
+        return buildRestaurantDto(restaurantPage, userId);
     }
 
     // --> Statistics 반환 구간
