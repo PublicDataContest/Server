@@ -13,5 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class NormalReviewDto extends ReviewDto {
     @JsonIgnore
     private MultipartFile photoFile;
+    private Long userId;
+
 
 }

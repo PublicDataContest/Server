@@ -47,7 +47,9 @@ public class ReviewController {
 
         // 식당 ID에 대한 모든 사용자의 일반 리뷰 가져오기
         List<NormalReviewDto> normalReviews = reviewService.getNormalReviews(userId, restaurantId);
-        response.put("userId", userId);
+        for (NormalReviewDto review : normalReviews) {
+            review.setUserId(userId);
+        }
         response.put("normalReviews", normalReviews);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
