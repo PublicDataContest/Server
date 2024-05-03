@@ -47,10 +47,13 @@ public class ReviewService {
         Users user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
         Restaurant restaurant = restaurantRepository.findById(restaurantId).orElseThrow(() -> new IllegalArgumentException("Restaurant not found"));
 
+        String photoUrl = null;
+
         if (reviewDto.getPhotoFile() != null && !reviewDto.getPhotoFile().isEmpty()) {
-            String photoUrl = s3Service.uploadMultipartFile(reviewDto.getPhotoFile());
-            reviewDto.setPhotoUrl(photoUrl);
+            photoUrl = s3Service.uploadMultipartFile(reviewDto.getPhotoFile());
         }
+
+        reviewDto.setPhotoUrl(photoUrl);
 
         Reviews review = new Reviews();
         review.setAuthorName(user.getUserName()); // 사용자 이름 자동 설정
