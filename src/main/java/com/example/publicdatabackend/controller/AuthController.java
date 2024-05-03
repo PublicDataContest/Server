@@ -107,7 +107,6 @@ public class AuthController {
             tokenStoreService.removeToken(refreshToken);
             tokenStoreService.storeToken(newRefreshToken, username, true);
 
-            // Include userId in the response
             return ResponseEntity.ok(new RefreshTokenResponse(userDetails.getId(), newAccessToken, newRefreshToken));
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid or Expired Refresh Token");
