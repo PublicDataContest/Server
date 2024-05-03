@@ -31,7 +31,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
         String requestURI = request.getRequestURI();
 
-        if (!requestURI.equals("/login") && !requestURI.equals("/register") &&
+        if (!requestURI.equals("/login") && !requestURI.equals("/register") && !requestURI.equals("/check/username") &&
                  !requestURI.contains("/api") &&
             !requestURI.startsWith("/swagger-ui") && !requestURI.startsWith("/v3/api-docs") // --> 개발을 위해 임시로 주석처리
         ) {

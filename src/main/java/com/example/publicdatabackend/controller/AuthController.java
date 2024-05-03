@@ -22,9 +22,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -84,6 +82,22 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.CREATED).body(baseResponse);
     }
 
+    @GetMapping("/check/username")
+    public ResponseEntity<BaseResponse> checkUsernameAvailability(@RequestParam String username) {
+        boolean isTaken = authService.isUsernameTaken(username);
+
+        if (isTaken) {
+            // 아이디가 이미 사용 중인 경우
+            BaseResponse response = new BaseResponse(StatusCodeConstant.BAD_REQUEST_STATUS_CODE, "이미 사용중인 아이디입니다.");
+            return ResponseEntity.ok(response);
+        } else {
+            // 아이디 사용 가능한 경우
+            BaseResponse response = new BaseResponse(StatusCodeConstant.OK_STATUS_CODE, "사용가능한 아이디입니다.");
+            return ResponseEntity.ok(response);
+        }
+    }
+
+
     @PostMapping("/api/refresh-token")
     public ResponseEntity<?> refreshToken(@RequestBody RefreshTokenRequest refreshTokenRequest) {
         String refreshToken = refreshTokenRequest.getRefreshToken();
@@ -107,7 +121,6 @@ public class AuthController {
             tokenStoreService.removeToken(refreshToken);
             tokenStoreService.storeToken(newRefreshToken, username, true);
 
-            // Include userId in the response
             return ResponseEntity.ok(new RefreshTokenResponse(userDetails.getId(), newAccessToken, newRefreshToken));
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid or Expired Refresh Token");
