@@ -36,6 +36,8 @@ public class Restaurant {
     private Long totalExecAmounts;
     private Long numberOfVisit;
 
+    private Boolean priceModel;
+
     @Column(columnDefinition = "TEXT")
     private String currentOpeningHours;
 }

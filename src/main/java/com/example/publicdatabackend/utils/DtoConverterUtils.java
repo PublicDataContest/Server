@@ -60,6 +60,7 @@ public class DtoConverterUtils {
                 .currentOpeningHours(restaurant.getCurrentOpeningHours())
                 .photoUrl(restaurant.getPhotoUrl())
                 .hashTags(hashTags)
+                .priceModel(restaurant.getPriceModel())
                 .build();
     }
 
