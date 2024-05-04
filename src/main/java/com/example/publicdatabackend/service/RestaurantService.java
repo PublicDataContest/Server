@@ -268,7 +268,7 @@ public class RestaurantService {
     }
 
     private Page<Top5RankingDto> buildTop5RankingDto(Page<Restaurant> restaurantPage, Long userId) {
-        return restaurantPage.map(restaurant -> restaurantDtoConverterUtils.buildTop5RankingDto(restaurant, userId));
+        return restaurantPage.map(restaurant -> restaurantDtoConverterUtils.buildTop5RankingDto(restaurant));
     }
 
     private CardDetailDto buildCardRestaurantDto(Optional<Restaurant> restaurant, Long userId) {

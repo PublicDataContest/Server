@@ -16,4 +16,5 @@ public class Top5RankingDto {
     private String placeName;
     private Long reviewsNum;
     private Double rating;
+    private Boolean priceModel;
 }

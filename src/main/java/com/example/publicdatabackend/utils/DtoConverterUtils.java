@@ -64,22 +64,16 @@ public class DtoConverterUtils {
                 .build();
     }
 
-    public Top5RankingDto buildTop5RankingDto(Restaurant restaurant, Long userId) {
+    public Top5RankingDto buildTop5RankingDto(Restaurant restaurant) {
         Long kakaoReviewsNum = kakaoReviewsRepository.findKakaoReviewsNumByRestaurant(restaurant);
         Long reviewsNum = reviewsRepository.findReviewsNumByRestaurant(restaurant);
-
-        Boolean wishListRestaurant = wishListRestaurantRepository
-                .findWishListRestaurantByUserIdAndRestaurantId(userId, restaurant.getId())
-                .isPresent();
-
-        List<Object[]> categoryDetails = categoryRepository.findCategoryDetailsByRestaurant(restaurant);
-        String hashTags = categoryDetails.isEmpty() ? "" : (String) categoryDetails.get(0)[1];
 
         return Top5RankingDto.builder()
                 .restaurantId(restaurant.getId())
                 .placeName(restaurant.getPlaceName())
                 .reviewsNum(kakaoReviewsNum + reviewsNum)
                 .rating(restaurant.getRating())
+                .priceModel(restaurant.getPriceModel())
                 .build();
     }
 
