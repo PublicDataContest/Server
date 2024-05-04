@@ -20,4 +20,5 @@ public class RestaurantDto {
     private String currentOpeningHours;
     private String photoUrl;
     private String hashTags;
+    private Boolean priceModel;
 }
