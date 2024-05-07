@@ -2,100 +2,107 @@ package com.example.publicdatabackend.service;
 
 import com.example.publicdatabackend.dto.map.WeatherDataDto;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.time.LocalTime;
-import java.time.temporal.ChronoUnit;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 @Service
 public class WeatherService {
-    @Value("${weather.api.url}")
-    private String apiUrl;
 
     @Value("${weather.api.key}")
     private String apiKey;
 
+    // 서울시 중심 좌표
+    private static final int DEFAULT_NX = 55;
+    private static final int DEFAULT_NY = 127;
+
+    private static final String BASE_URL = "http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst";
+
+    /**
+     * 가장 가까운 예보 기준 시간(3시간 단위) 계산
+     */
     private String getNearestForecastTime() {
         LocalTime now = LocalTime.now();
         int hour = now.getHour();
-        int minute = now.getMinute();
-
-        // 현재 시간을 3시간 단위로 반올림
         int mod = hour % 3;
-        hour = (mod < 1.5) ? (hour - mod) : (hour + (3 - mod));
-        // 시간을 'hh00' 형식으로 반환
+        hour = mod < 2 ? hour - mod : hour + (3 - mod); // 3시간 단위로 반올림
         return String.format("%02d00", hour);
     }
 
-    public List<WeatherDataDto> getWeatherData() {
+    /**
+     * 기상청 API로부터 날씨 데이터를 가져와 필요한 항목만 반환
+     */
+    public List<WeatherDataDto> getWeatherData() throws Exception {
         LocalDate yesterday = LocalDate.now().minusDays(1);
         String baseDate = yesterday.format(DateTimeFormatter.BASIC_ISO_DATE);
         String baseTime = "2300";
         String nearestForecastTime = getNearestForecastTime();
-        int nx = 55;
-        int ny = 127;
 
-        String url = UriComponentsBuilder.fromHttpUrl(apiUrl)
-                .queryParam("serviceKey", apiKey)
-                .queryParam("numOfRows", "266")
-                .queryParam("pageNo", "1")
-                .queryParam("dataType", "JSON")
-                .queryParam("base_date", baseDate)
-                .queryParam("base_time", baseTime)
-                .queryParam("nx", nx)
-                .queryParam("ny", ny)
-                .toUriString();
+        // URL 구성
+        StringBuilder urlBuilder = new StringBuilder(BASE_URL);
+        urlBuilder.append("?" + URLEncoder.encode("serviceKey", "UTF-8") + "=" + apiKey);
+        urlBuilder.append("&" + URLEncoder.encode("pageNo", "UTF-8") + "=" + URLEncoder.encode("1","UTF-8"));
+        urlBuilder.append("&" + URLEncoder.encode("numOfRows", "UTF-8") + "=" + URLEncoder.encode("266","UTF-8"));
+        urlBuilder.append("&" + URLEncoder.encode("dataType", "UTF-8") + "=" + URLEncoder.encode("JSON","UTF-8"));
+        urlBuilder.append("&" + URLEncoder.encode("base_date", "UTF-8") + "=" + URLEncoder.encode(baseDate, "UTF-8"));
+        urlBuilder.append("&" + URLEncoder.encode("base_time", "UTF-8") + "=" + URLEncoder.encode(baseTime, "UTF-8"));
+        urlBuilder.append("&" + URLEncoder.encode("nx", "UTF-8") + "=" + URLEncoder.encode(String.valueOf(DEFAULT_NX), "UTF-8"));
+        urlBuilder.append("&" + URLEncoder.encode("ny", "UTF-8") + "=" + URLEncoder.encode(String.valueOf(DEFAULT_NY), "UTF-8"));
 
-        RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<WeatherApiResponse> response = restTemplate.getForEntity(url, WeatherApiResponse.class);
+        URL url = new URL(urlBuilder.toString());
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("GET");
+        conn.setRequestProperty("Content-type", "application/json");
 
-        if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
-            return Arrays.stream(response.getBody().getResponse().getBody().getItems().getItem())
-                    .filter(item -> item.getCategory().equals("TMP") || item.getCategory().equals("PCP") || item.getCategory().equals("SKY") )
-                    .filter(item -> item.getFcstTime().equals(nearestForecastTime))
-                    .map(item -> new WeatherDataDto(item.getCategory(), item.getFcstDate(), item.getFcstTime(), item.getFcstValue()))
-                    .collect(Collectors.toList());
+        // 응답 읽기
+        BufferedReader rd;
+        if (conn.getResponseCode() >= 200 && conn.getResponseCode() <= 300) {
+            rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
         } else {
-            throw new RuntimeException("Failed to fetch weather data");
+            rd = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
         }
-    }
 
-    private static class WeatherApiResponse {
-        private ApiResponse response;
-
-        public ApiResponse getResponse() {
-            return response;
+        StringBuilder responseBuilder = new StringBuilder();
+        String line;
+        while ((line = rd.readLine()) != null) {
+            responseBuilder.append(line);
+            // API 응답 출력
+            System.out.println(line);
         }
-    }
+        rd.close();
+        conn.disconnect();
 
-    private static class ApiResponse {
-        private ApiBody body;
+        // JSON 응답 파싱
+        String response = responseBuilder.toString();
+        JSONObject jsonResponse = new JSONObject(response);
+        JSONArray items = jsonResponse.getJSONObject("response").getJSONObject("body").getJSONObject("items").getJSONArray("item");
 
-        public ApiBody getBody() {
-            return body;
+        // JSONArray 내부 아이템을 JSONObject로 직접 변환
+        List<WeatherDataDto> weatherList = new ArrayList<>();
+        for (int i = 0; i < items.length(); i++) {
+            JSONObject item = items.getJSONObject(i);
+            if (List.of("TMP", "PCP", "SKY").contains(item.getString("category")) && item.getString("fcstTime").equals(nearestForecastTime)) {
+                weatherList.add(new WeatherDataDto(
+                        item.getString("category"),
+                        item.getString("fcstDate"),
+                        item.getString("fcstTime"),
+                        item.getString("fcstValue")));
+            }
         }
-    }
 
-    private static class ApiBody {
-        private ApiItems items;
-
-        public ApiItems getItems() {
-            return items;
-        }
-    }
-
-    private static class ApiItems {
-        private WeatherDataDto[] item;
-
-        public WeatherDataDto[] getItem() {
-            return item;
-        }
+        return weatherList;
     }
 }

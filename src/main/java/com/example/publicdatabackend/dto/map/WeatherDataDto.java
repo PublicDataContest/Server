@@ -1,18 +1,37 @@
 package com.example.publicdatabackend.dto.map;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.ToString;
-
-@Getter
-@ToString
-@Builder
-@AllArgsConstructor
 public class WeatherDataDto {
-    private String category;//분류
-    private String fcstDate;//예상날짜
-    private String fcstTime;//예상시간
-    private String fcstValue;//값
+    private String category;
+    private String fcstDate;
+    private String fcstTime;
+    private String fcstValue;
 
+    public WeatherDataDto(String category, String fcstDate, String fcstTime, String fcstValue) {
+        this.category = category;
+        this.fcstDate = fcstDate;
+        this.fcstTime = fcstTime;
+        this.fcstValue = fcstValue;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public String getFcstDate() {
+        return fcstDate;
+    }
+
+    public String getFcstTime() {
+        return fcstTime;
+    }
+
+    public String getFcstValue() {
+        return fcstValue;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Category: %s, Forecast Date: %s, Time: %s, Value: %s",
+                category, fcstDate, fcstTime, fcstValue);
+    }
 }
