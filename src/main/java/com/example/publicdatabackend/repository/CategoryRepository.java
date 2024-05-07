@@ -8,9 +8,11 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface CategoryRepository extends JpaRepository<Category, Long> {
     @Query("SELECT c.categoryName, c.hashTags FROM Category c WHERE c.restaurant = :restaurant")
     List<Object[]> findCategoryDetailsByRestaurant(@Param("restaurant") Restaurant restaurant);
+
 }

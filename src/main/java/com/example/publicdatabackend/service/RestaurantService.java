@@ -14,10 +14,7 @@ import com.example.publicdatabackend.utils.ErrorResult;
 import com.example.publicdatabackend.utils.ExceptionUtils;
 import com.example.publicdatabackend.utils.DtoConverterUtils;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -39,6 +36,20 @@ public class RestaurantService {
     public Page<MapRestaurantDto> viewCoordinateByLongText(Long userId, String searchText, Pageable pageable) {
         validateUser(userId);
         Page<Restaurant> restaurantPage = restaurantRepository.findAllByLongText(searchText, pageable);
+        return buildMapRestaurantDto(restaurantPage, userId);
+    }
+
+    public Page<MapRestaurantDto> viewCoordinateByGpt(Long userId, String searchText, Pageable pageable) {
+        validateUser(userId);
+        // 페이지 번호, 크기, 정렬 기준을 설정하여 Pageable 객체 생성
+        int pageNo = 0; // 시작 페이지 번호
+        int pageSize = 8; // 한 페이지에 표시할 항목 수
+        Sort sort = Sort.by(Sort.Direction.DESC, "rating"); // 필드명을 기준으로 정렬
+        Pageable randomPageable = PageRequest.of(pageNo, pageSize, sort);
+
+        // 랜덤 페이지에 해당하는 결과를 가져옴
+        Page<Restaurant> restaurantPage = restaurantRepository.findAllByLongText(searchText, randomPageable);
+
         return buildMapRestaurantDto(restaurantPage, userId);
     }
 
