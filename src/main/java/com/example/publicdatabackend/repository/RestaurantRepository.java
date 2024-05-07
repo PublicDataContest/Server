@@ -26,6 +26,10 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
 
     Optional<Restaurant> findById(Long restaurantId);
 
+    @Query(value = "SELECT * FROM restaurant ORDER BY RANDOM()", nativeQuery = true)
+    Page<Restaurant> findRandomRestaurants(String searchText, Pageable pageable);
+
+
     @Query("SELECT r FROM Restaurant r WHERE r.id IN (:restaurantIds)")
     Page<Restaurant> findAllByRestaurantIds(@Param("restaurantIds") List<Long> restaurantIds, Pageable pageable);
 

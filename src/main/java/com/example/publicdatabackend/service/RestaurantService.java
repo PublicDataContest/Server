@@ -41,15 +41,8 @@ public class RestaurantService {
 
     public Page<MapRestaurantDto> viewCoordinateByGpt(Long userId, String searchText, Pageable pageable) {
         validateUser(userId);
-        // 페이지 번호, 크기, 정렬 기준을 설정하여 Pageable 객체 생성
-        int pageNo = 0; // 시작 페이지 번호
-        int pageSize = 8; // 한 페이지에 표시할 항목 수
-        Sort sort = Sort.by(Sort.Direction.DESC, "rating"); // 필드명을 기준으로 정렬
-        Pageable randomPageable = PageRequest.of(pageNo, pageSize, sort);
-
-        // 랜덤 페이지에 해당하는 결과를 가져옴
-        Page<Restaurant> restaurantPage = restaurantRepository.findAllByLongText(searchText, randomPageable);
-
+        // 랜덤으로 레스토랑을 선택하고 반환
+        Page<Restaurant> restaurantPage = restaurantRepository.findRandomRestaurants(searchText, pageable);
         return buildMapRestaurantDto(restaurantPage, userId);
     }
 
