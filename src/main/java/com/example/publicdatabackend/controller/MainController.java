@@ -72,7 +72,11 @@ public class MainController {
 
     @GetMapping("/weather")
     public List<WeatherDataDto> getWeather() {
-        return weatherService.getWeatherData();
+        try {
+            return weatherService.getWeatherData();
+        } catch (Exception e) {
+            throw new RuntimeException("Unable to fetch weather data", e);
+        }
     }
 
     @GetMapping("/map/{userId}/{searchText}/restaurants")
