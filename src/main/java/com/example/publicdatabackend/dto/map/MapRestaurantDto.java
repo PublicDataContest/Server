@@ -26,6 +26,4 @@ public class MapRestaurantDto {
     private String categoryName;
     private List<String> category;//리스트로 만든 해시태그
 
-    private String categoryGroupName;
-
 }
