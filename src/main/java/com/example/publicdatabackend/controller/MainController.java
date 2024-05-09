@@ -115,7 +115,7 @@ public class MainController {
         List<MapRestaurantDto> filteredNonRestaurants = restaurantDtoPage.getContent().stream()
                 .filter(restaurantDto -> {
                     List<String> categories = restaurantDto.getCategory();
-                    return categories == null || !categories.contains("음식점");
+                    return categories != null && categories.contains("카페");
                 })
                 .collect(Collectors.toList());
 
